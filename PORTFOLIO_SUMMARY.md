@@ -1,4 +1,4 @@
-# Hassan Muse BookShop - Portfolio Summary
+# Al Qalam BookShop - Portfolio Summary
 
 ## 🚀 **Enterprise Bookstore Management System**
 

@@ -138,12 +138,12 @@ export default function Layout({
       icon: FileText,
       color: "from-indigo-600 to-blue-600",
     },
-    {
-      id: "user-activity",
-      label: "Staff Activity",
-      icon: Activity,
-      color: "from-rose-600 to-pink-600",
-    },
+    // {
+    //   id: "user-activity",
+    //   label: "Staff Activity",
+    //   icon: Activity,
+    //   color: "from-rose-600 to-pink-600",
+    // },
   ];
 
   const tabs = isAdmin ? [...baseTabs, ...adminTabs] : baseTabs;
@@ -152,8 +152,8 @@ export default function Layout({
   // No need for manual fetching - React Query auto-refetches every 2 minutes
 
   const getStaffName = (email: string) => {
-    if (email.includes("yussuf") || email.includes("admin"))
-      return "Yussuf Muse (Admin)";
+    if (email.includes("galiyowabi") || email.includes("admin"))
+      return "Mohamed Mohamud (Admin)";
     if (email.includes("khaled")) return "Khaled";
     return email.split("@")[0];
   };
@@ -225,7 +225,7 @@ export default function Layout({
                   </div>
                   <div>
                     <h1 className="text-lg font-black text-white">
-                      Hassan Muse
+                      Al Qalam
                     </h1>
                     <p className="text-xs text-purple-300 font-medium">
                       BookShop & Cyber
@@ -383,9 +383,9 @@ export default function Layout({
                     <Package className="w-4 h-4 text-white" />
                   </div>
                 </div>
-                <div className="hidden sm:block">
+                  <div className="hidden sm:block">
                   <h1 className="text-sm font-black text-white">
-                    Hassan Muse BookShop
+                    Al Qalam BookShop
                   </h1>
                   <p className="text-xs text-purple-300 font-medium">
                     ERP System

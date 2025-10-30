@@ -2,7 +2,7 @@
 
 ## Overview
 
-Hassan Muse BookShop has been optimized for mobile devices with comprehensive responsive design improvements.
+Al Qalam BookShop has been optimized for mobile devices with comprehensive responsive design improvements.
 
 ## Key Mobile Improvements
 
@@ -95,4 +95,4 @@ Hassan Muse BookShop has been optimized for mobile devices with comprehensive re
 - Ready for production deployment
 - PWA capabilities maintained
 
-The Hassan Muse BookShop is now fully optimized for mobile use with professional-grade responsive design patterns.
+The Al Qalam BookShop is now fully optimized for mobile use with professional-grade responsive design patterns.

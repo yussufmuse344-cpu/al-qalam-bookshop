@@ -1,5 +1,5 @@
 /**
- * Performance monitoring utilities for Hassan Muse BookShop
+ * Performance monitoring utilities for Al Qalam BookShop
  */
 
 export interface PerformanceMetrics {

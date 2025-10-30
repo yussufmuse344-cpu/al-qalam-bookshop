@@ -1,4 +1,4 @@
--- 🛒 Hassan Muse BookShop - Orders System Setup
+-- 🛒 Al Qalam BookShop - Orders System Setup
 -- Copy and paste this entire script into Supabase SQL Editor
 
 -- ✅ Step 1: Clean up any existing functions/triggers (with CASCADE to handle dependencies)

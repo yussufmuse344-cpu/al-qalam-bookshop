@@ -256,4 +256,4 @@ Created a comprehensive premium design system with:
 
 _"Design is not just what it looks like and feels like. Design is how it works." - Steve Jobs_
 
-This transformation brings enterprise-level polish to Hassan Muse BookShop ERP system. 🚀
+This transformation brings enterprise-level polish to Al Qalam BookShop ERP system. 🚀

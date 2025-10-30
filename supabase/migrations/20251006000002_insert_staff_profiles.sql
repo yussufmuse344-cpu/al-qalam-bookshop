@@ -1,4 +1,4 @@
--- Manual staff account creation for Hassan Muse BookShop
+-- Manual staff account creation for Al Qalam BookShop
 -- This migration manually inserts staff profiles into the database
 -- Note: In production, these would be created through the auth system
 

@@ -37,4 +37,4 @@ Only the sensitive setup information has been secured.
 
 ---
 
-_Hassan Muse BookShop - Security-First Development_
+_Al Qalam BookShop - Security-First Development_
