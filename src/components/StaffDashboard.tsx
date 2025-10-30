@@ -34,8 +34,8 @@ export default function StaffDashboard() {
   const staffName = useMemo(() => {
     if (!user?.email) return "Staff Member";
     const email = user.email;
-    if (email.includes("yussuf") || email.includes("admin"))
-      return "Yussuf Muse";
+    if (email.includes("galiyowabi") || email.includes("admin"))
+      return "Mohamed Mohamud";
     if (email.includes("khaled")) return "Khaled";
     return email.split("@")[0];
   }, [user]);

@@ -563,7 +563,7 @@ export default function CustomerStore({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
-              <h3 className="text-xl font-bold mb-4">Hassan Muse BookShop</h3>
+              <h3 className="text-xl font-bold mb-4">Al Qalam BookShop</h3>
               <p className="text-slate-300">
                 Your trusted partner for books, stationery, and more. Quality
                 products, fast delivery, best prices.
@@ -579,7 +579,7 @@ export default function CustomerStore({
                     href="tel:+254722979547"
                     className="hover:text-white transition-colors"
                   >
-                    +254 722 979 547
+                    +254 722 740 432 
                   </a>
                 </p>
                 <p className="flex items-center space-x-2">
@@ -588,7 +588,7 @@ export default function CustomerStore({
                     href="mailto:Yussufh080@gmail.com"
                     className="hover:text-white transition-colors"
                   >
-                    Yussufh080@gmail.com
+                    galiyowabi@gmail.com
                   </a>
                 </p>
                 <p className="flex items-center space-x-2">
@@ -614,7 +614,7 @@ export default function CustomerStore({
           </div>
 
           <div className="border-t border-slate-700 mt-8 pt-8 text-center text-slate-400">
-            <p>&copy; 2025 Hassan Muse BookShop. All rights reserved.</p>
+            <p>&copy; 2025 Al Qalam BookShop. All rights reserved.</p>
           </div>
         </div>
       </footer>

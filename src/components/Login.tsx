@@ -81,7 +81,7 @@ export default function Login({ onLogin }: LoginProps) {
               </div>
             </div>
             <h1 className="text-3xl font-black bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">
-              Hassan Muse BookShop
+              Al Qalam BookShop
             </h1>
             <p className="text-slate-600 font-medium mt-2">
               Gal Nidaamka - Staff Login System

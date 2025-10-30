@@ -43,7 +43,7 @@ export default function Layout({
   const { data: pendingOrdersCount = 0 } = usePendingOrdersCount();
 
   // Check if current user is admin or staff (mutually exclusive)
-  const isAdmin = user?.email === "admin@bookshop.ke";
+  const isAdmin = user?.email === "galiyowabi@gmail.com";
   const isStaff = user?.email === "khalid123@gmail.com";
 
   // Dynamic tabs based on user role

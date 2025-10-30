@@ -108,11 +108,11 @@ export default function Dashboard() {
           <div className="text-center space-y-2">
             <div className="inline-block">
               <h1 className="text-xl sm:text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-200 to-pink-200">
-                Hassan Muse BookShop
+                Al Qalam BookShop
               </h1>
             </div>
             <p className="text-xs md:text-sm text-slate-200 font-medium max-w-3xl mx-auto">
-              ✨ Premium ERP Dashboard • Real-Time Analytics
+              ✨ Welcome to the Al Qalam BookShop Dashboard
             </p>
             <div className="flex items-center justify-center space-x-2 text-emerald-400">
               <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
