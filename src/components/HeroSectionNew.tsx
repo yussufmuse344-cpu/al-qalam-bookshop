@@ -117,7 +117,7 @@ const HeroSection = memo(
 
                   {/* Contact Info - Mobile Friendly */}
                   <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start space-y-2 sm:space-y-0 sm:space-x-6 text-sm text-slate-300">
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2 whitespace-nowrap">
                       <Phone className="w-4 h-4 text-purple-400" />
                       <span className="font-medium">+254 722 740 432</span>
                     </div>
