@@ -112,8 +112,11 @@ export default function Dashboard() {
               </h1>
             </div>
             <p className="text-xs md:text-sm text-slate-200 font-medium max-w-3xl mx-auto">
-              ✨ Welcome to the Al Qalam BookShop Dashboard
+              ✨ Ku soo dhowow Dashboard-ka Al Qalam BookShop — Halka aad ku
+              maamusho alaabta, iibka, iyo shaqaalaha. La soco xogta
+              waqtiga-dhabta ah si aad ganacsigaaga hore ugu waddo!
             </p>
+
             <div className="flex items-center justify-center space-x-2 text-emerald-400">
               <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
               <span className="text-xs font-semibold">Live System Active</span>
