@@ -10,7 +10,7 @@ interface SaleFormProps {
 }
 
 const paymentMethods = ["Cash", "Mpesa", "Card", "Bank Transfer"];
-const staffMembers = ["Yussuf", "Khaled", "Zakaria"];
+const staffMembers = ["Mohamed"];
 
 export default function SaleForm({
   products,
