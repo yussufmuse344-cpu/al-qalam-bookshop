@@ -362,10 +362,9 @@ export default function FinancialDashboard() {
         0
       );
       // Total profit: product/service profit + cyber profit
-      const totalProfit = salesData.reduce(
-        (sum, sale) => sum + (sale.profit || 0),
-        0
-      ) + cyberProfit;
+      const totalProfit =
+        salesData.reduce((sum, sale) => sum + (sale.profit || 0), 0) +
+        cyberProfit;
 
       // Calculate financial metrics
       const totalExpenses = expensesData.reduce(
@@ -442,45 +441,53 @@ export default function FinancialDashboard() {
         })
         .reduce((sum, expense) => sum + (expense.amount || 0), 0);
 
-      const monthlyRevenue = salesData
-        .filter((sale: any) => {
-          if (!sale.sale_date) return false;
-          const saleDate = new Date(sale.sale_date);
-          return (
-            saleDate.getMonth() + 1 === currentMonth &&
-            saleDate.getFullYear() === currentYear
+      const monthlyRevenue =
+        salesData
+          .filter((sale: any) => {
+            if (!sale.created_at) return false;
+            const saleDate = new Date(sale.created_at);
+            return (
+              saleDate.getMonth() + 1 === currentMonth &&
+              saleDate.getFullYear() === currentYear
+            );
+          })
+          .reduce((sum, sale) => sum + (sale.total_sale || 0), 0) +
+        cyberServices
+          .filter((service: any) => {
+            const serviceDate = new Date(service.date);
+            return (
+              serviceDate.getMonth() + 1 === currentMonth &&
+              serviceDate.getFullYear() === currentYear
+            );
+          })
+          .reduce(
+            (sum: number, service: any) => sum + (service.amount || 0),
+            0
           );
-        })
-        .reduce((sum, sale) => sum + (sale.total_sale || 0), 0)
-        + cyberServices
-            .filter((service: any) => {
-              const serviceDate = new Date(service.date);
-              return (
-                serviceDate.getMonth() + 1 === currentMonth &&
-                serviceDate.getFullYear() === currentYear
-              );
-            })
-            .reduce((sum: number, service: any) => sum + (service.amount || 0), 0);
 
-      const monthlyProfit = salesData
-        .filter((sale: any) => {
-          if (!sale.sale_date) return false;
-          const saleDate = new Date(sale.sale_date);
-          return (
-            saleDate.getMonth() + 1 === currentMonth &&
-            saleDate.getFullYear() === currentYear
+      const monthlyProfit =
+        salesData
+          .filter((sale: any) => {
+            if (!sale.created_at) return false;
+            const saleDate = new Date(sale.created_at);
+            return (
+              saleDate.getMonth() + 1 === currentMonth &&
+              saleDate.getFullYear() === currentYear
+            );
+          })
+          .reduce((sum, sale) => sum + (sale.profit || 0), 0) +
+        cyberServices
+          .filter((service: any) => {
+            const serviceDate = new Date(service.date);
+            return (
+              serviceDate.getMonth() + 1 === currentMonth &&
+              serviceDate.getFullYear() === currentYear
+            );
+          })
+          .reduce(
+            (sum: number, service: any) => sum + (service.amount || 0),
+            0
           );
-        })
-        .reduce((sum, sale) => sum + (sale.profit || 0), 0)
-        + cyberServices
-            .filter((service: any) => {
-              const serviceDate = new Date(service.date);
-              return (
-                serviceDate.getMonth() + 1 === currentMonth &&
-                serviceDate.getFullYear() === currentYear
-              );
-            })
-            .reduce((sum: number, service: any) => sum + (service.amount || 0), 0);
 
       // Calculate daily metrics
       const today = new Date();
@@ -490,38 +497,56 @@ export default function FinancialDashboard() {
       yesterday.setDate(yesterday.getDate() - 1);
       const yesterdayStr = yesterday.toISOString().split("T")[0];
 
-      const dailyRevenue = salesData
-        .filter((sale: any) => {
-          if (!sale.sale_date) return false;
-          const saleDate = new Date(sale.sale_date).toISOString().split("T")[0];
-          return saleDate === todayStr;
-        })
-        .reduce((sum, sale) => sum + (sale.total_sale || 0), 0)
-        + cyberServices
-            .filter((service: any) => {
-              const serviceDate = new Date(service.date).toISOString().split("T")[0];
-              return serviceDate === todayStr;
-            })
-            .reduce((sum: number, service: any) => sum + (service.amount || 0), 0);
+      const dailyRevenue =
+        salesData
+          .filter((sale: any) => {
+            if (!sale.created_at) return false;
+            const saleDate = new Date(sale.created_at)
+              .toISOString()
+              .split("T")[0];
+            return saleDate === todayStr;
+          })
+          .reduce((sum, sale) => sum + (sale.total_sale || 0), 0) +
+        cyberServices
+          .filter((service: any) => {
+            const serviceDate = new Date(service.date)
+              .toISOString()
+              .split("T")[0];
+            return serviceDate === todayStr;
+          })
+          .reduce(
+            (sum: number, service: any) => sum + (service.amount || 0),
+            0
+          );
 
-      const dailyProfit = salesData
-        .filter((sale: any) => {
-          if (!sale.sale_date) return false;
-          const saleDate = new Date(sale.sale_date).toISOString().split("T")[0];
-          return saleDate === todayStr;
-        })
-        .reduce((sum, sale) => sum + (sale.profit || 0), 0)
-        + cyberServices
-            .filter((service: any) => {
-              const serviceDate = new Date(service.date).toISOString().split("T")[0];
-              return serviceDate === todayStr;
-            })
-            .reduce((sum: number, service: any) => sum + (service.amount || 0), 0);
+      const dailyProfit =
+        salesData
+          .filter((sale: any) => {
+            if (!sale.created_at) return false;
+            const saleDate = new Date(sale.created_at)
+              .toISOString()
+              .split("T")[0];
+            return saleDate === todayStr;
+          })
+          .reduce((sum, sale) => sum + (sale.profit || 0), 0) +
+        cyberServices
+          .filter((service: any) => {
+            const serviceDate = new Date(service.date)
+              .toISOString()
+              .split("T")[0];
+            return serviceDate === todayStr;
+          })
+          .reduce(
+            (sum: number, service: any) => sum + (service.amount || 0),
+            0
+          );
 
       const yesterdayProfit = salesData
         .filter((sale: any) => {
-          if (!sale.sale_date) return false;
-          const saleDate = new Date(sale.sale_date).toISOString().split("T")[0];
+          if (!sale.created_at) return false;
+          const saleDate = new Date(sale.created_at)
+            .toISOString()
+            .split("T")[0];
           return saleDate === yesterdayStr;
         })
         .reduce((sum, sale) => sum + (sale.profit || 0), 0);
@@ -710,9 +735,17 @@ export default function FinancialDashboard() {
                   Total Sales (All Sources)
                 </p>
                 <p className="text-lg sm:text-xl md:text-2xl font-bold">
-                  KES {(
-                    sales.reduce((sum: number, sale: any) => sum + (sale.total_sale || 0), 0) +
-                    cyberServices.reduce((sum: number, service: any) => sum + (service.amount || 0), 0)
+                  KES{" "}
+                  {(
+                    sales.reduce(
+                      (sum: number, sale: any) => sum + (sale.total_sale || 0),
+                      0
+                    ) +
+                    cyberServices.reduce(
+                      (sum: number, service: any) =>
+                        sum + (service.amount || 0),
+                      0
+                    )
                   ).toLocaleString()}
                 </p>
               </div>
@@ -728,9 +761,17 @@ export default function FinancialDashboard() {
                   Total Profit (All Sources)
                 </p>
                 <p className="text-lg sm:text-xl md:text-2xl font-bold">
-                  KES {(
-                    sales.reduce((sum: number, sale: any) => sum + (sale.profit || 0), 0) +
-                    cyberServices.reduce((sum: number, service: any) => sum + (service.amount || 0), 0)
+                  KES{" "}
+                  {(
+                    sales.reduce(
+                      (sum: number, sale: any) => sum + (sale.profit || 0),
+                      0
+                    ) +
+                    cyberServices.reduce(
+                      (sum: number, service: any) =>
+                        sum + (service.amount || 0),
+                      0
+                    )
                   ).toLocaleString()}
                 </p>
               </div>
@@ -746,9 +787,17 @@ export default function FinancialDashboard() {
                   Total Revenue (Cash at Hand)
                 </p>
                 <p className="text-lg sm:text-xl md:text-2xl font-bold">
-                  KES {(
-                    sales.reduce((sum: number, sale: any) => sum + (sale.total_sale || 0), 0) +
-                    cyberServices.reduce((sum: number, service: any) => sum + (service.amount || 0), 0)
+                  KES{" "}
+                  {(
+                    sales.reduce(
+                      (sum: number, sale: any) => sum + (sale.total_sale || 0),
+                      0
+                    ) +
+                    cyberServices.reduce(
+                      (sum: number, service: any) =>
+                        sum + (service.amount || 0),
+                      0
+                    )
                   ).toLocaleString()}
                 </p>
               </div>

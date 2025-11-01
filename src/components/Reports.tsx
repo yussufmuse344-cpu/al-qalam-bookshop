@@ -21,15 +21,15 @@ export default function Reports() {
 
     switch (dateRange) {
       case "today":
-        return sales.filter((s) => new Date(s.sale_date) >= today);
+        return sales.filter((s) => new Date(s.created_at) >= today);
       case "week":
         const weekAgo = new Date(today);
         weekAgo.setDate(weekAgo.getDate() - 7);
-        return sales.filter((s) => new Date(s.sale_date) >= weekAgo);
+        return sales.filter((s) => new Date(s.created_at) >= weekAgo);
       case "month":
         const monthAgo = new Date(today);
         monthAgo.setMonth(monthAgo.getMonth() - 1);
-        return sales.filter((s) => new Date(s.sale_date) >= monthAgo);
+        return sales.filter((s) => new Date(s.created_at) >= monthAgo);
       default:
         return sales;
     }
@@ -52,7 +52,7 @@ export default function Reports() {
         "Date,Product ID,Product Name,Quantity,Price,Total Sale,Profit,Payment Method,Sold By\n";
       filtered.forEach((s) => {
         const product = products.find((p) => p.id === s.product_id);
-        csv += `${new Date(s.sale_date).toLocaleString()},"${
+        csv += `${new Date(s.created_at).toLocaleString()},"${
           product?.product_id || "N/A"
         }","${product?.name || "Unknown"}",${s.quantity_sold},${
           s.selling_price

@@ -287,7 +287,7 @@ export default function Dashboard() {
                   <div className="flex items-center justify-between">
                     <div className="flex-1 min-w-0">
                       <p className="font-bold text-white text-xs md:text-sm">
-                        {formatDate(sale.sale_date)}
+                        {formatDate(sale.created_at)}
                       </p>
                       <p className="text-xs text-slate-400 font-medium truncate">
                         {sale.sold_by}

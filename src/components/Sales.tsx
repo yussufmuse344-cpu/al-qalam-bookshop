@@ -144,10 +144,10 @@ export default function Sales() {
                       className="hover:bg-white/5 transition-colors"
                     >
                       <td className="px-6 py-4 text-slate-200">
-                        {formatDate(sale.sale_date)}
+                        {formatDate(sale.created_at)}
                         <br />
                         <span className="text-xs text-slate-400">
-                          {new Date(sale.sale_date).toLocaleTimeString()}
+                          {new Date(sale.created_at).toLocaleTimeString()}
                         </span>
                       </td>
                       <td className="px-6 py-4">

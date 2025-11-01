@@ -216,7 +216,7 @@ export default function Layout({
           <div className="p-6 border-b border-white/10">
             {!isDesktopSidebarCollapsed ? (
               <>
-                <div className="flex items-center space-x-3 mb-4">
+                <div className="hidden lg:flex items-center space-x-3 mb-4">
                   <div className="relative group">
                     <div className="absolute inset-0 bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl blur-lg opacity-75 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div className="relative bg-gradient-to-br from-purple-600 to-pink-600 p-3 rounded-2xl shadow-xl">
@@ -376,15 +376,15 @@ export default function Layout({
                 )}
               </button>
 
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2 min-w-0">
                 <div className="relative">
                   <div className="absolute inset-0 bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl blur opacity-75"></div>
                   <div className="relative bg-gradient-to-br from-purple-600 to-pink-600 p-2 rounded-xl shadow-xl">
                     <Package className="w-4 h-4 text-white" />
                   </div>
                 </div>
-                <div className="hidden sm:block">
-                  <h1 className="text-sm font-black text-white">
+                <div className="hidden sm:block min-w-0">
+                  <h1 className="text-sm font-black text-white truncate max-w-[160px]">
                     AL-KALAM BOOKS
                   </h1>
                   <p className="text-xs text-purple-300 font-medium">
@@ -436,14 +436,14 @@ export default function Layout({
       {/* Mobile Sidebar - Glassmorphic */}
       <div
         className={`
-          fixed inset-y-0 left-0 z-40 w-72 transform transition-transform duration-300 ease-in-out lg:hidden
+          fixed top-16 bottom-0 left-0 z-40 w-72 transform transition-transform duration-300 ease-in-out lg:hidden
           ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
         `}
       >
         {/* Backdrop */}
         {isSidebarOpen && (
           <div
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm"
+            className="fixed top-16 left-0 right-0 bottom-0 bg-black/60 backdrop-blur-sm"
             onClick={() => setIsSidebarOpen(false)}
           ></div>
         )}
