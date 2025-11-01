@@ -203,7 +203,7 @@ const CheckoutModal = memo(
 
           <div className="overflow-y-auto max-h-[calc(90vh-120px)]">
             {/* Order Summary */}
-            <div className="p-6 border-b border-white/20 bg-white/5 backdrop-blur-xl">
+            <div className="p-6 border-b border-white/20 bg-white/10 backdrop-blur-xl">
               <h3 className="font-semibold text-white mb-4">Order Summary</h3>
               <div className="space-y-2">
                 {cart.items.map((item) => (
@@ -248,7 +248,7 @@ const CheckoutModal = memo(
             {/* Checkout Form */}
             <form
               onSubmit={handleSubmit}
-              className="p-6 space-y-6 bg-white/5 backdrop-blur-xl"
+              className="p-6 space-y-6 bg-white/10 backdrop-blur-xl border-t border-white/20"
             >
               {/* Customer Information */}
               <div>
@@ -267,7 +267,7 @@ const CheckoutModal = memo(
                       onChange={(e) =>
                         handleInputChange("customer_name", e.target.value)
                       }
-                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-slate-400"
+                      className="w-full px-4 py-3 bg-white/15 border border-white/30 rounded-lg text-white placeholder-slate-300 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400/50"
                       placeholder="Enter your full name"
                       required
                       disabled={isSubmitting}
@@ -285,7 +285,7 @@ const CheckoutModal = memo(
                         onChange={(e) =>
                           handleInputChange("phone_number", e.target.value)
                         }
-                        className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-slate-400"
+                        className="w-full pl-10 pr-4 py-3 bg-white/15 border border-white/30 rounded-lg text-white placeholder-slate-300 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400/50"
                         placeholder="+254 700 000 000"
                         required
                         disabled={isSubmitting}
@@ -305,7 +305,7 @@ const CheckoutModal = memo(
                       onChange={(e) =>
                         handleInputChange("email", e.target.value)
                       }
-                      className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-slate-400"
+                      className="w-full pl-10 pr-4 py-3 bg-white/15 border border-white/30 rounded-lg text-white placeholder-slate-300 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400/50"
                       placeholder="your@email.com"
                       disabled={isSubmitting}
                     />
@@ -323,14 +323,16 @@ const CheckoutModal = memo(
                   <label className="block text-sm font-medium text-slate-300 mb-2">
                     Delivery Address *
                   </label>
-                  <DeliveryAddressSelector
-                    value={formData.delivery_address}
-                    onChange={(address) =>
-                      handleInputChange("delivery_address", address)
-                    }
-                    onDeliveryFeeChange={handleDeliveryFeeChange}
-                    disabled={isSubmitting}
-                  />
+                  <div className="bg-white/10 border border-white/20 rounded-lg p-1">
+                    <DeliveryAddressSelector
+                      value={formData.delivery_address}
+                      onChange={(address) =>
+                        handleInputChange("delivery_address", address)
+                      }
+                      onDeliveryFeeChange={handleDeliveryFeeChange}
+                      disabled={isSubmitting}
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -359,8 +361,8 @@ const CheckoutModal = memo(
                       }
                       className={`p-3 border-2 rounded-lg text-center transition-all ${
                         paymentMethod === method.id
-                          ? "border-purple-500 bg-purple-500/20 text-purple-300"
-                          : "border-white/20 bg-white/5 text-white hover:border-white/30"
+                          ? "border-purple-400 bg-purple-500/25 text-purple-100"
+                          : "border-white/30 bg-white/10 text-white hover:bg-white/15"
                       }`}
                       disabled={isSubmitting}
                     >
@@ -381,7 +383,7 @@ const CheckoutModal = memo(
                   <textarea
                     value={formData.notes}
                     onChange={(e) => handleInputChange("notes", e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none text-white placeholder-slate-400"
+                    className="w-full pl-10 pr-4 py-3 bg-white/15 border border-white/30 rounded-lg text-white placeholder-slate-300 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400/50 resize-none"
                     placeholder="Any special instructions or notes for your order..."
                     rows={3}
                     disabled={isSubmitting}

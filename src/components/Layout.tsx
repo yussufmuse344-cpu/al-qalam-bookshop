@@ -228,7 +228,7 @@ export default function Layout({
                       AL-KALAM BOOKS
                     </h1>
                     <p className="text-xs text-purple-300 font-medium">
-                      BookShop & Cyber
+                      Bookshop & Cyber
                     </p>
                   </div>
                 </div>
