@@ -65,9 +65,9 @@ const HeroSection = memo(
                   {/* Main Heading with Trilingual Touch */}
                   <div className="space-y-4">
                     <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight">
-                      <span className="block">AL-KALAM BOOKS</span>
+                      <span className="block">AL-KALAM</span>
                       <span className="block bg-gradient-to-r from-purple-400 via-blue-400 to-pink-400 bg-clip-text text-transparent">
-                        BookShop
+                        BOOKS
                       </span>
                       <span className="block text-xl sm:text-2xl lg:text-3xl font-normal text-slate-300 mt-2">
                         Educational Store •{" "}
