@@ -26,7 +26,7 @@ const staffAccounts = [
 // Note: These accounts need to be created manually in Supabase Dashboard
 // or using the Supabase Admin API due to security restrictions
 
-console.log("=== AL QALAM BOOKSHOP - STAFF LOGIN CREDENTIALS ===\n");
+console.log("=== AL-KALAM BOOKS - STAFF LOGIN CREDENTIALS ===\n");
 
 staffAccounts.forEach((account, index) => {
   console.log(`${index + 1}. ${account.name}`);
@@ -48,7 +48,7 @@ console.log("\n🔒 SECURITY NOTES:");
 console.log("- Change passwords after first login");
 console.log("- Keep credentials secure and private");
 console.log("- Each staff member should only know their own password");
-  console.log("- Yussuf Muse (Admin) has full access to all features");
+console.log("- Yussuf Muse (Admin) has full access to all features");
 console.log("- NEVER commit real passwords to git!");
 
 export { staffAccounts };

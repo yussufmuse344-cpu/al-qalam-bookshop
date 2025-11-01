@@ -10,7 +10,7 @@
 
 ## 📊 Project Summary
 
-Hassan Financial System is a comprehensive financial management application for Al Qalam BookShop & Cyber Café. The system features a modern dark glassmorphic UI with collapsible sidebar navigation, optimized for desktop and mobile devices.
+Hassan Financial System is a comprehensive financial management application for AL-KALAM BOOKS & Cyber Café. The system features a modern dark glassmorphic UI with collapsible sidebar navigation, optimized for desktop and mobile devices.
 
 ### Key Features Implemented
 

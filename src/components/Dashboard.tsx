@@ -108,11 +108,11 @@ export default function Dashboard() {
           <div className="text-center space-y-2">
             <div className="inline-block">
               <h1 className="text-xl sm:text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-200 to-pink-200">
-                Al Qalam Bookshop
+                AL-KALAM BOOKS
               </h1>
             </div>
             <p className="text-xs md:text-sm text-slate-200 font-medium max-w-3xl mx-auto">
-              ✨ Ku soo dhowow Dashboard-ka Al Qalam Bookshop — Halka aad ku
+              ✨ Ku soo dhowow Dashboard-ka AL-KALAM BOOKS — Halka aad ku
               maamusho alaabta, iibka, iyo shaqaalaha. La soco xogta
               waqtiga-dhabta ah si aad ganacsigaaga hore ugu waddo!
             </p>

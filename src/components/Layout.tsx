@@ -225,7 +225,7 @@ export default function Layout({
                   </div>
                   <div>
                     <h1 className="text-lg font-black text-white">
-                      Al Qalam
+                      AL-KALAM BOOKS
                     </h1>
                     <p className="text-xs text-purple-300 font-medium">
                       BookShop & Cyber
@@ -383,9 +383,9 @@ export default function Layout({
                     <Package className="w-4 h-4 text-white" />
                   </div>
                 </div>
-                  <div className="hidden sm:block">
+                <div className="hidden sm:block">
                   <h1 className="text-sm font-black text-white">
-                    Al Qalam BookShop
+                    AL-KALAM BOOKS
                   </h1>
                   <p className="text-xs text-purple-300 font-medium">
                     ERP System

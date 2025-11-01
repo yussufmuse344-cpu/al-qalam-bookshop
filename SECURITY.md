@@ -37,4 +37,4 @@ Only the sensitive setup information has been secured.
 
 ---
 
-_Al Qalam BookShop - Security-First Development_
+_AL-KALAM BOOKS - Security-First Development_

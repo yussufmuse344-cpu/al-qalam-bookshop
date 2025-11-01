@@ -1,4 +1,4 @@
-# Al Qalam BookShop - Portfolio Summary
+# AL-KALAM BOOKS - Portfolio Summary
 
 ## 🚀 **Enterprise Bookstore Management System**
 

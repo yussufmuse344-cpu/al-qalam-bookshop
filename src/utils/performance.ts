@@ -1,5 +1,5 @@
 /**
- * Performance monitoring utilities for Al Qalam BookShop
+ * Performance monitoring utilities for AL-KALAM BOOKS
  */
 
 export interface PerformanceMetrics {
