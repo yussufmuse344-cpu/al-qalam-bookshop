@@ -8,7 +8,6 @@ import {
   FileText,
   LogOut,
   User,
-  Activity,
   Menu,
   X,
   DollarSign,
