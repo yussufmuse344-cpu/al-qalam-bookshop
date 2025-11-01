@@ -20,8 +20,23 @@ const categories = [
   "Erasers",
   "Markers",
   "Quran",
+  "Print pepa",
+  "Office fell",
+  "Lunch box",
+  "Bags",
+  "Sabuurad",
+  "Ink",
+  "Water color",
+  "Crayons",
+  "Kutub elmi",
+  "Tarmus",
+  "Cup hot",
+  "Speaker",
+  "Locks/Qufulo",
+  "Malab/Honey",
   "Other",
 ];
+
 
 export default function ProductForm({
   product,
