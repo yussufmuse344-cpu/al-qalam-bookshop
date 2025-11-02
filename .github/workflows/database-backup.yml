@@ -29,11 +29,30 @@ jobs:
           mkdir -p backups
           echo "BACKUP_DATE=$(date +'%Y-%m-%d_%H-%M-%S')" >> $GITHUB_ENV
 
-      - name: Export database
+      - name: Resolve DB IPv4 and build connection URL
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: |
-          supabase db dump --db-url "$SUPABASE_DB_URL" --file "backups/backup_$BACKUP_DATE.sql"
+          # Extract hostname from the URI
+          DB_HOST=$(echo "$SUPABASE_DB_URL" | sed -E 's#^.*://[^@]*@([^:/?]+).*$#\1#')
+          echo "Resolved DB host: $DB_HOST"
+          # Resolve first IPv4 address
+          DB_HOST_IPV4=$(getent ahostsv4 "$DB_HOST" | awk '{print $1; exit}')
+          if [ -z "$DB_HOST_IPV4" ]; then
+            echo "Could not resolve IPv4 for $DB_HOST" >&2
+            exit 1
+          fi
+          echo "DB IPv4: $DB_HOST_IPV4"
+          # Append hostaddr to force IPv4 while keeping hostname for TLS/SNI
+          if [[ "$SUPABASE_DB_URL" == *"?"* || "$SUPABASE_DB_URL" == *"?"* ]]; then
+            echo "SUPABASE_DB_URL_IPV4=${SUPABASE_DB_URL}&hostaddr=${DB_HOST_IPV4}" >> $GITHUB_ENV
+          else
+            echo "SUPABASE_DB_URL_IPV4=${SUPABASE_DB_URL}?hostaddr=${DB_HOST_IPV4}" >> $GITHUB_ENV
+          fi
+
+      - name: Export database
+        run: |
+          supabase db dump --db-url "$SUPABASE_DB_URL_IPV4" --file "backups/backup_$BACKUP_DATE.sql"
 
       - name: Compress backup
         run: |
