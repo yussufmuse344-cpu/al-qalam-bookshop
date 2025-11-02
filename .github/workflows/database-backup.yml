@@ -72,15 +72,11 @@ jobs:
 
       - name: Export database (pg_dump)
         env:
-          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
-          DB_HOST_IPV4: ${{ env.DB_HOST_IPV4 }}
+          SUPABASE_DB_URL_IPV4: ${{ env.SUPABASE_DB_URL_IPV4 }}
         run: |
-          # Prefer forcing IPv4 via PGHOSTADDR when available
-          if [ -n "$DB_HOST_IPV4" ]; then
-            export PGHOSTADDR="$DB_HOST_IPV4"
-          fi
+          echo "Using connection URL (with hostaddr if available)"
           # Use plain SQL to keep compatibility with your existing compression step
-          pg_dump "$SUPABASE_DB_URL" -f "backups/backup_$BACKUP_DATE.sql"
+          pg_dump "$SUPABASE_DB_URL_IPV4" -f "backups/backup_$BACKUP_DATE.sql"
 
       - name: Compress backup
         run: |
