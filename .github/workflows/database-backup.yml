@@ -50,6 +50,10 @@ jobs:
           else
             echo "DB IPv4: $DB_HOST_IPV4"
           fi
+          # Make resolved IPv4 available to later steps
+          if [ -n "$DB_HOST_IPV4" ]; then
+            echo "DB_HOST_IPV4=$DB_HOST_IPV4" >> $GITHUB_ENV
+          fi
           # Append hostaddr to force IPv4 while keeping hostname for TLS/SNI
           if [ -n "$DB_HOST_IPV4" ]; then
             if [[ "$SUPABASE_DB_URL" == *"?"* ]]; then
@@ -61,9 +65,22 @@ jobs:
             echo "SUPABASE_DB_URL_IPV4=${SUPABASE_DB_URL}" >> $GITHUB_ENV
           fi
 
-      - name: Export database
+      - name: Install PostgreSQL client
         run: |
-          supabase --dns-resolver https db dump --db-url "$SUPABASE_DB_URL_IPV4" --file "backups/backup_$BACKUP_DATE.sql"
+          sudo apt-get update -y
+          sudo apt-get install -y postgresql-client
+
+      - name: Export database (pg_dump)
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          DB_HOST_IPV4: ${{ env.DB_HOST_IPV4 }}
+        run: |
+          # Prefer forcing IPv4 via PGHOSTADDR when available
+          if [ -n "$DB_HOST_IPV4" ]; then
+            export PGHOSTADDR="$DB_HOST_IPV4"
+          fi
+          # Use plain SQL to keep compatibility with your existing compression step
+          pg_dump "$SUPABASE_DB_URL" -f "backups/backup_$BACKUP_DATE.sql"
 
       - name: Compress backup
         run: |
