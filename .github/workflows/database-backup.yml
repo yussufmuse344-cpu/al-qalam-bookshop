@@ -36,23 +36,34 @@ jobs:
           # Extract hostname from the URI
           DB_HOST=$(echo "$SUPABASE_DB_URL" | sed -E 's#^.*://[^@]*@([^:/?]+).*$#\1#')
           echo "Resolved DB host: $DB_HOST"
-          # Resolve first IPv4 address
-          DB_HOST_IPV4=$(getent ahostsv4 "$DB_HOST" | awk '{print $1; exit}')
+          # Try to resolve first IPv4 address using getent (hosts)
+          DB_HOST_IPV4=$(getent hosts "$DB_HOST" | awk '/^[0-9\.]+\s/ {print $1; exit}')
+          # Fallback: install dnsutils and use dig if still empty
           if [ -z "$DB_HOST_IPV4" ]; then
-            echo "Could not resolve IPv4 for $DB_HOST" >&2
-            exit 1
+            echo "IPv4 not found via getent. Installing dnsutils to use dig..."
+            sudo apt-get update -y >/dev/null 2>&1 || true
+            sudo apt-get install -y dnsutils >/dev/null 2>&1 || true
+            DB_HOST_IPV4=$(dig +short A "$DB_HOST" | head -n1)
           fi
-          echo "DB IPv4: $DB_HOST_IPV4"
-          # Append hostaddr to force IPv4 while keeping hostname for TLS/SNI
-          if [[ "$SUPABASE_DB_URL" == *"?"* || "$SUPABASE_DB_URL" == *"?"* ]]; then
-            echo "SUPABASE_DB_URL_IPV4=${SUPABASE_DB_URL}&hostaddr=${DB_HOST_IPV4}" >> $GITHUB_ENV
+          if [ -z "$DB_HOST_IPV4" ]; then
+            echo "WARNING: Could not resolve IPv4 for $DB_HOST. Proceeding without forcing IPv4."
           else
-            echo "SUPABASE_DB_URL_IPV4=${SUPABASE_DB_URL}?hostaddr=${DB_HOST_IPV4}" >> $GITHUB_ENV
+            echo "DB IPv4: $DB_HOST_IPV4"
+          fi
+          # Append hostaddr to force IPv4 while keeping hostname for TLS/SNI
+          if [ -n "$DB_HOST_IPV4" ]; then
+            if [[ "$SUPABASE_DB_URL" == *"?"* ]]; then
+              echo "SUPABASE_DB_URL_IPV4=${SUPABASE_DB_URL}&hostaddr=${DB_HOST_IPV4}" >> $GITHUB_ENV
+            else
+              echo "SUPABASE_DB_URL_IPV4=${SUPABASE_DB_URL}?hostaddr=${DB_HOST_IPV4}" >> $GITHUB_ENV
+            fi
+          else
+            echo "SUPABASE_DB_URL_IPV4=${SUPABASE_DB_URL}" >> $GITHUB_ENV
           fi
 
       - name: Export database
         run: |
-          supabase db dump --db-url "$SUPABASE_DB_URL_IPV4" --file "backups/backup_$BACKUP_DATE.sql"
+          supabase --dns-resolver https db dump --db-url "$SUPABASE_DB_URL_IPV4" --file "backups/backup_$BACKUP_DATE.sql"
 
       - name: Compress backup
         run: |
@@ -60,6 +71,30 @@ jobs:
           tar -czf backup_$BACKUP_DATE.tar.gz backup_$BACKUP_DATE.sql
           rm backup_$BACKUP_DATE.sql
           cd ..
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies (prod only)
+        run: npm ci --omit=dev
+
+      - name: Backup Supabase Storage (buckets and objects)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          node scripts/backup-storage.mjs
+
+      - name: Compress storage backup
+        run: |
+          if [ -d "backups/storage" ]; then
+            tar -czf "backups/storage_$BACKUP_DATE.tar.gz" -C backups storage
+            rm -rf backups/storage
+          else
+            echo "No storage backup directory found; skipping compression."
+          fi
 
       - name: Upload backup as artifact
         uses: actions/upload-artifact@v4
