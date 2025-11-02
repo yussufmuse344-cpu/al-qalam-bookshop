@@ -177,17 +177,6 @@ export default function Dashboard() {
           </div>
           <div
             className="group animate-slideInLeft"
-            style={{ animationDelay: "0.3s" }}
-          >
-            <StatCard
-              title="Alaabta Guud - Total Products"
-              value={stats.totalProducts.toString()}
-              icon={Package}
-              color="purple"
-            />
-          </div>
-          <div
-            className="group animate-slideInLeft"
             style={{ animationDelay: "0.4s" }}
           >
             <StatCard
@@ -196,6 +185,17 @@ export default function Dashboard() {
               icon={TrendingUp}
               color="orange"
               subtitle={`Profit: ${formatCurrency(stats.dailyProfit)}`}
+            />
+          </div>
+          <div
+            className="group animate-slideInLeft"
+            style={{ animationDelay: "0.3s" }}
+          >
+            <StatCard
+              title="Alaabta Guud - Total Products"
+              value={stats.totalProducts.toString()}
+              icon={Package}
+              color="purple"
             />
           </div>
         </div>
