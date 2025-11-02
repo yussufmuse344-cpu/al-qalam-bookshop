@@ -20,8 +20,9 @@ jobs:
           node-version: "20"
 
       - name: Install Supabase CLI
-        run: |
-          npm install -g supabase
+  run: |
+    curl -fsSL https://cli.supabase.com/install.sh | sh -s -- -b /usr/local/bin
+
 
       - name: Login to Supabase
         env:
