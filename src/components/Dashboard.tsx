@@ -1,11 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  Banknote,
-  TrendingUp,
-  Package,
-  AlertTriangle,
-  Receipt,
-} from "lucide-react";
+import { Banknote, TrendingUp, Package, Receipt } from "lucide-react";
 import { useProducts, useSales } from "../hooks/useSupabaseQuery";
 import type { Product, Sale } from "../types";
 import { formatDate } from "../utils/dateFormatter";
@@ -16,6 +10,8 @@ interface DashboardStats {
   totalProfit: number;
   lowStockCount: number;
   totalProducts: number;
+  dailySales: number;
+  dailyProfit: number;
 }
 
 function formatCurrency(value: number) {
@@ -31,6 +27,8 @@ export default function Dashboard() {
     totalProfit: 0,
     lowStockCount: 0,
     totalProducts: 0,
+    dailySales: 0,
+    dailyProfit: 0,
   });
   const [topProducts, setTopProducts] = useState<
     Array<{ product: Product; total: number }>
@@ -57,11 +55,29 @@ export default function Dashboard() {
         (p) => p.quantity_in_stock <= p.reorder_level
       ).length;
 
+      // Compute today's totals based on created_at (local day)
+      const today = new Date();
+      const dailySalesRecords = sales.filter((s) => {
+        const d = new Date(s.created_at);
+        return (
+          d.getFullYear() === today.getFullYear() &&
+          d.getMonth() === today.getMonth() &&
+          d.getDate() === today.getDate()
+        );
+      });
+      const dailySales = dailySalesRecords.reduce(
+        (sum, s) => sum + s.total_sale,
+        0
+      );
+      const dailyProfit = dailySalesRecords.reduce((sum, s) => sum + s.profit, 0);
+
       setStats({
         totalSales,
         totalProfit,
         lowStockCount,
         totalProducts: products.length,
+        dailySales,
+        dailyProfit,
       });
 
       const productSales = new Map<string, number>();
@@ -89,6 +105,8 @@ export default function Dashboard() {
         totalProfit: 0,
         lowStockCount: 0,
         totalProducts: 0,
+        dailySales: 0,
+        dailyProfit: 0,
       });
     }
   }
@@ -173,10 +191,11 @@ export default function Dashboard() {
             style={{ animationDelay: "0.4s" }}
           >
             <StatCard
-              title="Alaab Yaraatay - Low Stock"
-              value={stats.lowStockCount.toString()}
-              icon={AlertTriangle}
+              title="Iibka Maanta - Today's Sales"
+              value={formatCurrency(stats.dailySales)}
+              icon={TrendingUp}
               color="orange"
+              subtitle={`Profit: ${formatCurrency(stats.dailyProfit)}`}
             />
           </div>
         </div>

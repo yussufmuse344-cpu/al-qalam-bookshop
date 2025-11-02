@@ -1,13 +1,33 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400" role="img" aria-label="Image unavailable">
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="600"
+  height="400"
+  viewBox="0 0 600 400"
+  role="img"
+  aria-label="Image unavailable"
+>
   <defs>
     <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
-      <stop offset="0%" stop-color="#e5e7eb"/>
-      <stop offset="100%" stop-color="#c7d2fe"/>
+      <stop offset="0%" stop-color="#e5e7eb" />
+      <stop offset="100%" stop-color="#c7d2fe" />
     </linearGradient>
   </defs>
-  <rect width="600" height="400" fill="url(#g)"/>
-  <g fill="#64748b" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
-    <text x="50%" y="48%" font-size="22" text-anchor="middle">AL-KALAM BOOKS</text>
-    <text x="50%" y="58%" font-size="16" text-anchor="middle">Image unavailable</text>
+  <rect width="600" height="400" fill="url(#g)" />
+  <g
+    fill="#64748b"
+    font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif"
+  >
+    <text
+      x="50%"
+      y="48%"
+      font-size="22"
+      text-anchor="middle"
+    >AL-KALAM BOOKS</text>
+    <text
+      x="50%"
+      y="58%"
+      font-size="16"
+      text-anchor="middle"
+    >Image unavailable</text>
   </g>
 </svg>
