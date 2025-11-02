@@ -31,9 +31,9 @@ jobs:
 
       - name: Export database
         env:
-          SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: |
-          supabase db dump --project-ref $SUPABASE_PROJECT_ID --output backups/backup_$BACKUP_DATE.sql
+          supabase db dump --db-url "$SUPABASE_DB_URL" --file "backups/backup_$BACKUP_DATE.sql"
 
       - name: Compress backup
         run: |
