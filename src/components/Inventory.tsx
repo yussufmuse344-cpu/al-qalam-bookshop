@@ -12,17 +12,22 @@ import {
   Hash,
   Tag,
   TrendingUp,
+  FileText,
 } from "lucide-react";
 import { useProducts } from "../hooks/useSupabaseQuery";
 import { supabase } from "../lib/supabase";
 import type { Product } from "../types";
 import ProductForm from "./ProductForm";
+import ReceiveStockModal from "./ReceiveStockModal";
+import StockAuditTrail from "./StockAuditTrail";
 import OptimizedImage from "./OptimizedImage";
 import { formatDate } from "../utils/dateFormatter";
 
 export default function Inventory() {
   const { data: products = [], isLoading: loading, refetch } = useProducts();
   const [showForm, setShowForm] = useState(false);
+  const [showReceive, setShowReceive] = useState(false);
+  const [showAudit, setShowAudit] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   // Persist viewingProduct in sessionStorage
   const [viewingProduct, setViewingProduct] = useState<Product | null>(() => {
@@ -33,7 +38,10 @@ export default function Inventory() {
   // Save modal state to sessionStorage whenever it changes
   useEffect(() => {
     if (viewingProduct) {
-      sessionStorage.setItem("inventory_viewingProduct", JSON.stringify(viewingProduct));
+      sessionStorage.setItem(
+        "inventory_viewingProduct",
+        JSON.stringify(viewingProduct)
+      );
     } else {
       sessionStorage.removeItem("inventory_viewingProduct");
     }
@@ -138,7 +146,7 @@ export default function Inventory() {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="flex flex-col gap-3">
         <div>
           <h2 className="text-lg sm:text-xl font-bold text-white">
             Inventory Management
@@ -147,13 +155,33 @@ export default function Inventory() {
             Manage your bookstore products
           </p>
         </div>
-        <button
-          onClick={() => setShowForm(true)}
-          className="flex items-center justify-center space-x-2 bg-gradient-to-r from-blue-600 to-cyan-600 text-white px-4 sm:px-5 py-2.5 rounded-xl hover:from-blue-500 hover:to-cyan-500 transition-all shadow-xl hover:shadow-2xl hover:scale-105 w-full sm:w-auto font-semibold text-sm"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Add Product</span>
-        </button>
+
+        {/* Mobile First: Stack all buttons vertically on mobile, then horizontal on larger screens */}
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+          <button
+            onClick={() => setShowReceive(true)}
+            className="flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-green-600 text-white px-5 py-3 rounded-xl hover:from-emerald-500 hover:to-green-500 transition-all shadow-xl hover:shadow-2xl hover:scale-105 font-semibold text-sm sm:text-base w-full sm:w-auto sm:flex-1"
+            title="Record a new stock receipt"
+          >
+            <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5" />
+            <span>Alaab timid - Receive Stock</span>
+          </button>
+          <button
+            onClick={() => setShowAudit(true)}
+            className="flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-5 py-3 rounded-xl hover:from-purple-500 hover:to-indigo-500 transition-all shadow-xl hover:shadow-2xl hover:scale-105 font-semibold text-sm sm:text-base w-full sm:w-auto sm:flex-1"
+            title="View stock movement history"
+          >
+            <FileText className="w-4 h-4 sm:w-5 sm:h-5" />
+            <span>Raadraac</span>
+          </button>
+          <button
+            onClick={() => setShowForm(true)}
+            className="flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-cyan-600 text-white px-5 py-3 rounded-xl hover:from-blue-500 hover:to-cyan-500 transition-all shadow-xl hover:shadow-2xl hover:scale-105 font-semibold text-sm sm:text-base w-full sm:w-auto sm:flex-1"
+          >
+            <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+            <span>Add Product</span>
+          </button>
+        </div>
       </div>
 
       {/* Desktop Table View */}
@@ -676,6 +704,15 @@ export default function Inventory() {
           onSuccess={handleFormSuccess}
         />
       )}
+      {showReceive && (
+        <ReceiveStockModal
+          onClose={() => setShowReceive(false)}
+          onSuccess={() => {
+            refetch();
+          }}
+        />
+      )}
+      {showAudit && <StockAuditTrail onClose={() => setShowAudit(false)} />}
     </div>
   );
 }

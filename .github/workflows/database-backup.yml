@@ -45,6 +45,15 @@ jobs:
             sudo apt-get install -y dnsutils >/dev/null 2>&1 || true
             DB_HOST_IPV4=$(dig +short A "$DB_HOST" | head -n1)
           fi
+          # Try public resolvers if still empty
+          if [ -z "$DB_HOST_IPV4" ]; then
+            echo "Trying Cloudflare DNS (1.1.1.1) for A record..."
+            DB_HOST_IPV4=$(dig +short A "$DB_HOST" @1.1.1.1 | head -n1)
+          fi
+          if [ -z "$DB_HOST_IPV4" ]; then
+            echo "Trying Google DNS (8.8.8.8) for A record..."
+            DB_HOST_IPV4=$(dig +short A "$DB_HOST" @8.8.8.8 | head -n1)
+          fi
           if [ -z "$DB_HOST_IPV4" ]; then
             echo "WARNING: Could not resolve IPv4 for $DB_HOST. Proceeding without forcing IPv4."
           else

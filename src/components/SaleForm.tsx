@@ -9,7 +9,7 @@ interface SaleFormProps {
   onSuccess: () => void;
 }
 
-const paymentMethods = ["Cash", "Mpesa", "Card", "Bank Transfer"];
+const paymentMethods = ["Cash", "Mpesa", "Till Number", "Card", "Bank Transfer"];
 const staffMembers = ["Mohamed", "Najib", "Isse", "Timo", "Samira"];
 
 export default function SaleForm({

@@ -123,10 +123,7 @@ const HeroSection = memo(
                     </div>
                     <div className="hidden sm:block w-1 h-1 bg-slate-400 rounded-full"></div>
                     <span className="text-center">
-                      Free delivery within Nairobi •{" "}
-                      <span className="font-somali">
-                        Gaadiid bilaash Nairobi gudaheeda
-                      </span>
+                      <span className="text-center">Badeeco tayo leh</span>
                     </span>
                   </div>
 
