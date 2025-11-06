@@ -22,6 +22,7 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 -- Stock receipts header (simplified - just timestamp and user)
 CREATE TABLE IF NOT EXISTS public.stock_receipts (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  received_by text,
   received_at timestamptz NOT NULL DEFAULT now(),
   created_at timestamptz NOT NULL DEFAULT now(),
   created_by uuid DEFAULT auth.uid()
@@ -43,6 +44,7 @@ CREATE TABLE IF NOT EXISTS public.stock_movements (
   reason text NOT NULL, -- e.g., 'RECEIPT', 'SALE', 'ADJUSTMENT'
   ref_type text,        -- e.g., 'stock_receipts', 'sales'
   ref_id uuid,
+  received_by text,     -- Staff member who performed the action
   created_at timestamptz NOT NULL DEFAULT now(),
   created_by uuid DEFAULT auth.uid()
 );
@@ -87,14 +89,18 @@ DECLARE
   v_item jsonb;
   v_product_id uuid;
   v_qty integer;
+  v_received_by text;
 BEGIN
   IF p_items IS NULL OR jsonb_array_length(p_items) = 0 THEN
     RAISE EXCEPTION 'No items provided';
   END IF;
 
+  -- Get received_by from first item (all items should have same received_by)
+  v_received_by := (p_items->0->>'received_by')::text;
+
   -- Insert receipt header
-  INSERT INTO public.stock_receipts(id, received_at, created_by)
-  VALUES (v_receipt_id, now(), auth.uid());
+  INSERT INTO public.stock_receipts(id, received_by, received_at, created_by)
+  VALUES (v_receipt_id, v_received_by, now(), auth.uid());
 
   -- Process each item
   FOR v_item IN SELECT * FROM jsonb_array_elements(p_items) LOOP
@@ -118,9 +124,9 @@ BEGIN
           updated_at = now()
       WHERE id = v_product_id;
 
-    -- Audit trail
-    INSERT INTO public.stock_movements(product_id, quantity_change, reason, ref_type, ref_id, created_by)
-    VALUES (v_product_id, v_qty, 'RECEIPT', 'stock_receipts', v_receipt_id, auth.uid());
+    -- Audit trail with received_by
+    INSERT INTO public.stock_movements(product_id, quantity_change, reason, ref_type, ref_id, received_by, created_by)
+    VALUES (v_product_id, v_qty, 'RECEIPT', 'stock_receipts', v_receipt_id, v_received_by, auth.uid());
   END LOOP;
 
   RETURN v_receipt_id;

@@ -8,6 +8,7 @@ import {
   CheckCircle2,
   TrendingUp,
   Search,
+  User,
 } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { useProducts } from "../hooks/useSupabaseQuery";
@@ -18,6 +19,8 @@ type LineItem = {
   product?: Product;
   quantity: number;
 };
+
+const staffMembers = ["Mohamed", "Najib", "Isse", "Timo", "Samira"];
 
 export default function ReceiveStockModal({
   onClose,
@@ -30,6 +33,7 @@ export default function ReceiveStockModal({
 
   const [items, setItems] = useState<LineItem[]>([]);
   const [search, setSearch] = useState<string>("");
+  const [receivedBy, setReceivedBy] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
   const [successId, setSuccessId] = useState<string | null>(null);
 
@@ -64,11 +68,13 @@ export default function ReceiveStockModal({
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (items.length === 0) return alert("Add at least one item.");
+    if (!receivedBy) return alert("Please select who received the stock.");
     const normalized = items
       .map((it) => ({
         product_id: it.product?.id,
         quantity: Number(it.quantity) || 0,
         cost_per_unit: null,
+        received_by: receivedBy,
       }))
       .filter((i) => i.product_id && i.quantity > 0);
 
@@ -349,42 +355,74 @@ export default function ReceiveStockModal({
 
                 {/* Footer - Mobile Optimized */}
                 {items.length > 0 && (
-                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pt-4 sm:pt-6 border-t-2 border-white/30 mt-4 sm:mt-6">
-                    <div className="bg-gradient-to-r from-emerald-500/25 to-green-500/25 border-2 border-emerald-400/50 rounded-2xl sm:rounded-3xl px-5 sm:px-8 py-4 sm:py-5 backdrop-blur-xl shadow-xl shadow-emerald-500/10">
-                      <p className="text-emerald-200 text-xs sm:text-sm font-bold uppercase tracking-wide mb-1">
-                        Wadarta - Total Units
-                      </p>
-                      <p className="text-white font-black text-3xl sm:text-4xl drop-shadow-lg">
-                        {totalUnits}
-                      </p>
+                  <div className="space-y-4 pt-4 sm:pt-6 border-t-2 border-white/30 mt-4 sm:mt-6">
+                    {/* Staff Selection */}
+                    <div className="bg-gradient-to-br from-blue-500/15 to-purple-500/15 border-2 border-blue-400/40 rounded-2xl sm:rounded-3xl p-4 sm:p-5 backdrop-blur-xl shadow-xl">
+                      <label className="text-white font-bold text-sm sm:text-base mb-3 flex items-center gap-2">
+                        <User className="w-4 h-4 sm:w-5 sm:h-5 text-blue-300 drop-shadow" />
+                        Qofka Soo Qaaday - Received By *
+                      </label>
+                      <select
+                        value={receivedBy}
+                        onChange={(e) => setReceivedBy(e.target.value)}
+                        required
+                        className="w-full bg-white/15 border-2 border-white/30 rounded-xl sm:rounded-2xl px-4 py-3 sm:py-4 text-white text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-400/60 focus:border-blue-400/60 transition-all shadow-lg backdrop-blur-xl"
+                      >
+                        <option value="" className="bg-slate-900 text-white">
+                          -- Dooro Shaqaalaha / Select Staff --
+                        </option>
+                        {staffMembers.map((staff) => (
+                          <option
+                            key={staff}
+                            value={staff}
+                            className="bg-slate-900 text-white"
+                          >
+                            {staff}
+                          </option>
+                        ))}
+                      </select>
                     </div>
-                    <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-                      <button
-                        type="button"
-                        onClick={onClose}
-                        className="px-6 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-white/15 text-white hover:bg-white/25 border-2 border-white/30 hover:border-white/50 transition-all font-bold text-sm sm:text-base backdrop-blur-xl shadow-lg hover:scale-105 active:scale-95"
-                      >
-                        Ka Noqo - Cancel
-                      </button>
-                      <button
-                        type="submit"
-                        disabled={submitting || items.length === 0}
-                        className="inline-flex items-center justify-center gap-2 sm:gap-3 px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-emerald-600 to-green-600 text-white hover:from-emerald-500 hover:to-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-2xl shadow-emerald-500/30 hover:shadow-emerald-500/50 hover:scale-105 active:scale-95 font-black text-sm sm:text-base lg:text-lg backdrop-blur-xl border-2 border-emerald-400/30"
-                      >
-                        {successId ? (
-                          <>
-                            <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6" />{" "}
-                            La Qaatay!
-                          </>
-                        ) : submitting ? (
-                          "Ku Shaqaynaya..."
-                        ) : (
-                          <>
-                            <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6" />
-                            Receive Stock
-                          </>
-                        )}
-                      </button>
+
+                    {/* Summary and Buttons */}
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+                      <div className="bg-gradient-to-r from-emerald-500/25 to-green-500/25 border-2 border-emerald-400/50 rounded-2xl sm:rounded-3xl px-5 sm:px-8 py-4 sm:py-5 backdrop-blur-xl shadow-xl shadow-emerald-500/10">
+                        <p className="text-emerald-200 text-xs sm:text-sm font-bold uppercase tracking-wide mb-1">
+                          Wadarta - Total Units
+                        </p>
+                        <p className="text-white font-black text-3xl sm:text-4xl drop-shadow-lg">
+                          {totalUnits}
+                        </p>
+                      </div>
+                      <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                        <button
+                          type="button"
+                          onClick={onClose}
+                          className="px-6 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-white/15 text-white hover:bg-white/25 border-2 border-white/30 hover:border-white/50 transition-all font-bold text-sm sm:text-base backdrop-blur-xl shadow-lg hover:scale-105 active:scale-95"
+                        >
+                          Ka Noqo - Cancel
+                        </button>
+                        <button
+                          type="submit"
+                          disabled={
+                            submitting || items.length === 0 || !receivedBy
+                          }
+                          className="inline-flex items-center justify-center gap-2 sm:gap-3 px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-emerald-600 to-green-600 text-white hover:from-emerald-500 hover:to-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-2xl shadow-emerald-500/30 hover:shadow-emerald-500/50 hover:scale-105 active:scale-95 font-black text-sm sm:text-base lg:text-lg backdrop-blur-xl border-2 border-emerald-400/30"
+                        >
+                          {successId ? (
+                            <>
+                              <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6" />{" "}
+                              La Qaatay!
+                            </>
+                          ) : submitting ? (
+                            "Ku Shaqaynaya..."
+                          ) : (
+                            <>
+                              <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6" />
+                              Soo Qaad Alaabta
+                            </>
+                          )}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 )}

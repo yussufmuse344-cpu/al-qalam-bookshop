@@ -20,6 +20,7 @@ type StockMovement = {
   reason: string;
   ref_type: string | null;
   ref_id: string | null;
+  received_by: string | null;
   created_at: string;
   created_by: string | null;
   product?: {
@@ -149,7 +150,9 @@ export default function StockAuditTrail({ onClose }: { onClose: () => void }) {
                     Taariikhda Alaabta - Stock Audit Trail
                   </h3>
                   <p className="text-purple-100 text-xs sm:text-sm mt-0.5 sm:mt-1">
-                    Audit trail waa diiwaan muujinaya cidda wax beddeshay, goorta ay beddeshay, iyo waxa la beddelay gudaha nidaamka - Raadi dhammaan isbeddelada alaabta
+                    Audit trail waa diiwaan muujinaya cidda wax beddeshay,
+                    goorta ay beddeshay, iyo waxa la beddelay gudaha nidaamka -
+                    Raadi dhammaan isbeddelada alaabta
                   </p>
                 </div>
               </div>
@@ -299,7 +302,7 @@ export default function StockAuditTrail({ onClose }: { onClose: () => void }) {
                           </div>
                         </div>
 
-                        {/* Date & Time */}
+                        {/* Date, Time & Staff */}
                         <div className="text-right">
                           <div className="flex items-center gap-1.5 text-slate-300 text-xs sm:text-sm mb-1">
                             <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -307,6 +310,11 @@ export default function StockAuditTrail({ onClose }: { onClose: () => void }) {
                               {formatDate(movement.created_at)}
                             </span>
                           </div>
+                          {movement.received_by && (
+                            <p className="text-blue-300 text-xs sm:text-sm font-bold mb-1">
+                              👤 {movement.received_by}
+                            </p>
+                          )}
                           {movement.ref_type && (
                             <p className="text-slate-400 text-xs">
                               Ref: {movement.ref_type}
