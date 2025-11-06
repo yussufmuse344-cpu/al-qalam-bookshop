@@ -213,7 +213,7 @@ export default function StockAuditTrail({ onClose }: { onClose: () => void }) {
                       refreshing ? "animate-spin" : ""
                     }`}
                   />
-                  Cusbooneysii
+                  Refresh
                 </button>
               </div>
             </div>
