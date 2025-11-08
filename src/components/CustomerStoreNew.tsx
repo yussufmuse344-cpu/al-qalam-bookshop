@@ -596,8 +596,8 @@ export default function CustomerStore({
                   <span>Nairobi, Kenya</span>
                 </p>
                 <p className="flex items-center space-x-2">
-                  <span>🚚</span>
-                  <span>Free delivery over KES 2,000</span>
+                  <span>⚡</span>
+                  <span>Made with ❤️ by Lenzro</span>
                 </p>
               </div>
             </div>

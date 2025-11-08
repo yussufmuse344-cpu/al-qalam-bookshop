@@ -526,41 +526,41 @@ export default function Layout({
 
       {/* Main Content Area */}
       <main
-        className={`relative pt-16 lg:pt-0 min-h-screen transition-all duration-300 ${
+        className={`relative pt-16 lg:pt-0 transition-all duration-300 ${
           isDesktopSidebarCollapsed ? "lg:ml-20" : "lg:ml-72 xl:ml-80"
         }`}
       >
-        <div className="px-3 sm:px-4 lg:px-6 py-3 md:py-4 lg:py-6 max-w-[1600px] mx-auto">
-          {children}
-        </div>
+        <div className="min-h-screen flex flex-col">
+          <div className="flex-1 px-3 sm:px-4 lg:px-6 py-3 md:py-4 lg:py-6 max-w-[1600px] mx-auto w-full">
+            {children}
+          </div>
 
-        {/* Professional Footer Credit */}
-        <footer
-          className={`mt-8 py-4 border-t border-white/10 backdrop-blur-xl bg-white/5 transition-all duration-300 ${
-            isDesktopSidebarCollapsed ? "lg:ml-20" : "lg:ml-72 xl:ml-80"
-          }`}
-        >
-          <div className="px-3 sm:px-4 lg:px-6 max-w-[1600px] mx-auto">
-            <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-2 text-xs sm:text-sm text-slate-300">
-              <p className="text-center sm:text-left">
-                © {new Date().getFullYear()} Al-Qalam Bookshop. All rights
-                reserved.
-              </p>
-              <div className="flex items-center gap-2">
-                <span className="text-slate-400">Designed & Developed by</span>
-                <a
-                  href="https://lenzro.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-purple-600/20 to-blue-600/20 hover:from-purple-600/30 hover:to-blue-600/30 border border-purple-500/30 hover:border-purple-500/50 rounded-lg transition-all hover:scale-105 font-semibold text-purple-300 hover:text-purple-200 shadow-lg"
-                >
-                  <span className="text-lg">⚡</span>
-                  <span>Lenzro</span>
-                </a>
+          {/* Professional Footer Credit */}
+          <footer className="mt-auto py-4 border-t border-white/10 backdrop-blur-xl bg-white/5">
+            <div className="px-3 sm:px-4 lg:px-6 max-w-[1600px] mx-auto">
+              <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-2 text-xs sm:text-sm text-slate-300">
+                <p className="text-center sm:text-left">
+                  © {new Date().getFullYear()} Al-Qalam Bookshop. All rights
+                  reserved.
+                </p>
+                <div className="flex items-center gap-2">
+                  <span className="text-slate-400">
+                    Designed & Developed by
+                  </span>
+                  <a
+                    href="https://lenzro.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-purple-600/20 to-blue-600/20 hover:from-purple-600/30 hover:to-blue-600/30 border border-purple-500/30 hover:border-purple-500/50 rounded-lg transition-all hover:scale-105 font-semibold text-purple-300 hover:text-purple-200 shadow-lg"
+                  >
+                    <span className="text-lg">⚡</span>
+                    <span>Lenzro</span>
+                  </a>
+                </div>
               </div>
             </div>
-          </div>
-        </footer>
+          </footer>
+        </div>
       </main>
     </div>
   );
