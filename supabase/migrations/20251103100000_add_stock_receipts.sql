@@ -59,22 +59,30 @@ ALTER TABLE public.stock_receipts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.stock_receipt_items ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.stock_movements ENABLE ROW LEVEL SECURITY;
 
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS "Allow authenticated select receipts" ON public.stock_receipts;
+DROP POLICY IF EXISTS "Allow authenticated insert receipts" ON public.stock_receipts;
+DROP POLICY IF EXISTS "Allow authenticated select receipt items" ON public.stock_receipt_items;
+DROP POLICY IF EXISTS "Allow authenticated insert receipt items" ON public.stock_receipt_items;
+DROP POLICY IF EXISTS "Allow authenticated select movements" ON public.stock_movements;
+DROP POLICY IF EXISTS "Allow authenticated insert movements" ON public.stock_movements;
+
 -- Basic policies (adjust as needed for your app auth model)
 -- Allow authenticated users to manage receipts and items
-CREATE POLICY IF NOT EXISTS "Allow authenticated select receipts" ON public.stock_receipts
+CREATE POLICY "Allow authenticated select receipts" ON public.stock_receipts
   FOR SELECT TO authenticated USING (true);
-CREATE POLICY IF NOT EXISTS "Allow authenticated insert receipts" ON public.stock_receipts
+CREATE POLICY "Allow authenticated insert receipts" ON public.stock_receipts
   FOR INSERT TO authenticated WITH CHECK (true);
 
-CREATE POLICY IF NOT EXISTS "Allow authenticated select receipt items" ON public.stock_receipt_items
+CREATE POLICY "Allow authenticated select receipt items" ON public.stock_receipt_items
   FOR SELECT TO authenticated USING (true);
-CREATE POLICY IF NOT EXISTS "Allow authenticated insert receipt items" ON public.stock_receipt_items
+CREATE POLICY "Allow authenticated insert receipt items" ON public.stock_receipt_items
   FOR INSERT TO authenticated WITH CHECK (true);
 
 -- Movements: readable by authenticated; inserts typically via functions
-CREATE POLICY IF NOT EXISTS "Allow authenticated select movements" ON public.stock_movements
+CREATE POLICY "Allow authenticated select movements" ON public.stock_movements
   FOR SELECT TO authenticated USING (true);
-CREATE POLICY IF NOT EXISTS "Allow authenticated insert movements" ON public.stock_movements
+CREATE POLICY "Allow authenticated insert movements" ON public.stock_movements
   FOR INSERT TO authenticated WITH CHECK (true);
 
 -- RPC to process a stock receipt atomically (simplified parameters)

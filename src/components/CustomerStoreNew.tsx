@@ -613,8 +613,28 @@ export default function CustomerStore({
             </div>
           </div>
 
-          <div className="border-t border-slate-700 mt-8 pt-8 text-center text-slate-400">
-            <p>&copy; 2025 AL-KALAM BOOKS. All rights reserved.</p>
+          <div className="border-t border-slate-700 mt-8 pt-8">
+            <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-3 text-sm">
+              <p className="text-slate-400 text-center sm:text-left">
+                &copy; {new Date().getFullYear()} AL-KALAM BOOKS. All rights
+                reserved.
+              </p>
+              <div className="flex items-center gap-2">
+                <span className="text-slate-500">Powered by</span>
+                <a
+                  href="https://lenzro.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-purple-600/30 to-blue-600/30 hover:from-purple-600/40 hover:to-blue-600/40 border border-purple-500/40 hover:border-purple-400/60 rounded-lg transition-all hover:scale-105 font-bold text-purple-300 hover:text-purple-200 shadow-xl"
+                >
+                  <span className="text-lg">⚡</span>
+                  <span>Lenzro</span>
+                  <span className="text-xs text-purple-400">
+                    Digital Agency
+                  </span>
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </footer>
