@@ -213,3 +213,17 @@ export function useInitialInvestments() {
     async () => await supabase.from("initial_investments").select("*")
   );
 }
+
+/**
+ * Hook for returns data with caching
+ */
+export function useReturns() {
+  return useSupabaseQuery<any[]>(
+    "returns",
+    async () =>
+      await supabase
+        .from("returns")
+        .select("*")
+        .order("return_date", { ascending: false })
+  );
+}

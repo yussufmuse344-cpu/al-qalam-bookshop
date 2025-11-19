@@ -1,17 +1,18 @@
 import { useState } from "react";
 import { Download, Calendar } from "lucide-react";
-import { useProducts, useSales } from "../hooks/useSupabaseQuery";
+import { useProducts, useSales, useReturns } from "../hooks/useSupabaseQuery";
 import OptimizedImage from "./OptimizedImage";
 
 export default function Reports() {
   // ✅ Use cached hooks instead of direct queries - saves egress!
   const { data: products = [], isLoading: loadingProducts } = useProducts();
   const { data: sales = [], isLoading: loadingSales } = useSales();
+  const { data: returns = [], isLoading: loadingReturns } = useReturns();
   const [dateRange, setDateRange] = useState<
     "today" | "week" | "month" | "all"
   >("all");
 
-  const loading = loadingProducts || loadingSales;
+  const loading = loadingProducts || loadingSales || loadingReturns;
 
   // ❌ Removed useEffect and loadData - data now comes from cached hooks!
 
@@ -35,7 +36,33 @@ export default function Reports() {
     }
   }
 
-  function exportToCSV(type: "inventory" | "sales") {
+  function getFilteredReturns() {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    switch (dateRange) {
+      case "today":
+        return returns.filter(
+          (r: any) => new Date(r.return_date || r.created_at) >= today
+        );
+      case "week":
+        const weekAgo = new Date(today);
+        weekAgo.setDate(weekAgo.getDate() - 7);
+        return returns.filter(
+          (r: any) => new Date(r.return_date || r.created_at) >= weekAgo
+        );
+      case "month":
+        const monthAgo = new Date(today);
+        monthAgo.setMonth(monthAgo.getMonth() - 1);
+        return returns.filter(
+          (r: any) => new Date(r.return_date || r.created_at) >= monthAgo
+        );
+      default:
+        return returns;
+    }
+  }
+
+  function exportToCSV(type: "inventory" | "sales" | "returns") {
     let csv = "";
     let filename = "";
 
@@ -46,6 +73,23 @@ export default function Reports() {
         csv += `${p.product_id},"${p.name}",${p.category},${p.buying_price},${p.selling_price},${p.quantity_in_stock},${p.reorder_level}\n`;
       });
       filename = `inventory_${new Date().toISOString().split("T")[0]}.csv`;
+    } else if (type === "returns") {
+      const filtered = getFilteredReturns();
+      csv =
+        "Date,Product ID,Product Name,Quantity Returned,Refund Amount,Reason,Condition,Processed By,Status\n";
+      filtered.forEach((r: any) => {
+        const product = products.find((p) => p.id === r.product_id);
+        csv += `${new Date(r.return_date || r.created_at).toLocaleString()},"${
+          product?.product_id || "N/A"
+        }","${product?.name || "Unknown"}",${r.quantity_returned},${
+          r.total_refund
+        },"${r.reason || ""}","${r.condition || ""}","${r.processed_by}",${
+          r.status || "pending"
+        }\n`;
+      });
+      filename = `returns_${dateRange}_${
+        new Date().toISOString().split("T")[0]
+      }.csv`;
     } else {
       const filtered = getFilteredSales();
       csv =
@@ -73,8 +117,13 @@ export default function Reports() {
   }
 
   const filteredSales = getFilteredSales();
+  const filteredReturns = getFilteredReturns();
   const totalRevenue = filteredSales.reduce((sum, s) => sum + s.total_sale, 0);
   const totalProfit = filteredSales.reduce((sum, s) => sum + s.profit, 0);
+  const totalRefunded = filteredReturns.reduce(
+    (sum: number, r: any) => sum + (Number(r.total_refund) || 0),
+    0
+  );
   const lowStockProducts = products.filter(
     (p) => p.quantity_in_stock <= p.reorder_level
   );
@@ -159,21 +208,21 @@ export default function Reports() {
             </p>
           </div>
 
-          <div className="bg-gradient-to-br from-orange-600/20 to-amber-500/10 backdrop-blur-xl rounded-xl p-5 border border-orange-500/30 hover:-translate-y-1 transition-all duration-300">
-            <p className="text-xs md:text-sm text-orange-300 font-semibold mb-2 uppercase tracking-wide">
-              Low Stock Alerts
+          <div className="bg-gradient-to-br from-rose-600/20 to-red-500/10 backdrop-blur-xl rounded-xl p-5 border border-rose-500/30 hover:-translate-y-1 transition-all duration-300">
+            <p className="text-xs md:text-sm text-rose-300 font-semibold mb-2 uppercase tracking-wide">
+              Total Refunded
             </p>
             <p className="text-2xl md:text-3xl font-black text-white">
-              {lowStockProducts.length}
+              KES {totalRefunded.toLocaleString()}
             </p>
-            <p className="text-xs md:text-sm text-orange-400 mt-2 font-medium">
-              {products.length} total products
+            <p className="text-xs md:text-sm text-rose-400 mt-2 font-medium">
+              {filteredReturns.length} returns
             </p>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div className="bg-white/10 backdrop-blur-2xl rounded-2xl shadow-xl border border-white/20 p-6">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-lg font-bold text-white">Inventory Report</h3>
@@ -276,6 +325,68 @@ export default function Reports() {
               value={filteredSales
                 .reduce((sum, s) => sum + s.quantity_sold, 0)
                 .toString()}
+            />
+          </div>
+        </div>
+
+        <div className="bg-white/10 backdrop-blur-2xl rounded-2xl shadow-xl border border-white/20 p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-bold text-white">Returns Report</h3>
+            <button
+              onClick={() => exportToCSV("returns")}
+              className="flex items-center space-x-2 bg-gradient-to-r from-rose-500 to-red-600 text-white px-4 py-2 rounded-xl hover:scale-105 transition-all duration-300 shadow-lg shadow-rose-500/25 hover:shadow-xl hover:shadow-rose-500/40 text-sm font-bold"
+            >
+              <Download className="w-4 h-4" />
+              <span>Export CSV</span>
+            </button>
+          </div>
+          <div className="space-y-3">
+            <ReportRow
+              label="Total Returns"
+              value={filteredReturns.length.toString()}
+            />
+            <ReportRow
+              label="Total Refunded"
+              value={`KES ${totalRefunded.toLocaleString()}`}
+              valueColor="text-rose-600"
+            />
+            <ReportRow
+              label="Average Refund"
+              value={`KES ${
+                filteredReturns.length > 0
+                  ? (totalRefunded / filteredReturns.length).toFixed(2)
+                  : 0
+              }`}
+            />
+            <ReportRow
+              label="Items Returned"
+              value={filteredReturns
+                .reduce(
+                  (sum: number, r: any) => sum + (r.quantity_returned || 0),
+                  0
+                )
+                .toString()}
+            />
+            <ReportRow
+              label="Return Rate"
+              value={`${
+                filteredSales.length > 0
+                  ? (
+                      (filteredReturns.length / filteredSales.length) *
+                      100
+                    ).toFixed(1)
+                  : 0
+              }%`}
+              valueColor="text-rose-600"
+            />
+            <ReportRow
+              label="Refund Impact"
+              value={`${
+                totalRevenue > 0
+                  ? ((totalRefunded / totalRevenue) * 100).toFixed(1)
+                  : 0
+              }%`}
+              valueColor="text-rose-600"
             />
           </div>
         </div>
