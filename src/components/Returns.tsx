@@ -39,22 +39,64 @@ export default function Returns() {
   }
 
   async function handleDeleteReturn(returnId: string, productId: string, qty: number, productName: string) {
-    const deleteMessage = `Haqii inaad doonaysid inaad tirtirto soo celintan?\n\nDelete this return record for \"${productName}\"?\n\nTani kama noqon karto - This cannot be undone!`;
+    const deleteMessage = `Haqii inaad doonaysid inaad tirtirto soo celintan?\n\nDelete this return record for "${productName}"?\n\nThis will also reverse the refund in sales records.\n\nTani kama noqon karto - This cannot be undone!`;
     if (!confirm(deleteMessage)) return;
 
     try {
-      // Delete record
+      // Get return details before deleting
+      const { data: returnData } = await supabase
+        .from("returns")
+        .select("*")
+        .eq("id", returnId)
+        .single();
+
+      // Delete return record
       const { error } = await supabase.from("returns").delete().eq("id", returnId);
       if (error) {
         console.error("Error deleting return:", error);
         alert("Failed to delete return record.");
         return;
       }
-      // Trigger will auto adjust stock (AFTER DELETE trigger). If trigger not present, uncomment manual update:
-      // const prod = getProductById(productId);
-      // if (prod) {
-      //   await supabase.from("products").update({ quantity_in_stock: Math.max(prod.quantity_in_stock - qty,0) }).eq("id", productId);
-      // }
+
+      // Update inventory: Subtract returned quantity from stock since return is being deleted
+      const prod = getProductById(productId);
+      if (prod) {
+        const newStock = Math.max(prod.quantity_in_stock - qty, 0);
+        const { error: updateError } = await supabase
+          .from("products")
+          .update({ quantity_in_stock: newStock })
+          .eq("id", productId);
+        
+        if (updateError) {
+          console.error("Error updating inventory:", updateError);
+          alert("Return deleted but failed to update inventory. Please update stock manually.");
+        }
+
+        // Reverse the negative sale entry: Add back positive sale to restore revenue
+        if (returnData) {
+          const { error: saleError } = await supabase.from("sales").insert({
+            product_id: productId,
+            quantity_sold: qty, // Positive quantity
+            selling_price: returnData.unit_price || prod.selling_price,
+            buying_price: prod.buying_price,
+            total_sale: returnData.total_refund || (returnData.unit_price * qty), // Positive total
+            profit: (returnData.unit_price - prod.buying_price) * qty, // Positive profit
+            payment_method: returnData.payment_method || "Cash",
+            sold_by: returnData.processed_by,
+            sale_date: new Date().toISOString(),
+            original_price: returnData.unit_price || prod.selling_price,
+            final_price: returnData.unit_price || prod.selling_price,
+            discount_percentage: 0,
+            discount_amount: 0,
+          });
+
+          if (saleError) {
+            console.error("Error reversing refund in sales:", saleError);
+            alert("Return deleted but failed to reverse sales entry. Revenue may be incorrect.");
+          }
+        }
+      }
+
       alert("✅ Return record deleted successfully!");
       refetchReturns();
     } catch (err) {
