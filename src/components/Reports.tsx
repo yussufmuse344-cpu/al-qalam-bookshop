@@ -168,14 +168,14 @@ export default function Reports() {
         textColor: [0, 0, 0],
       },
       columnStyles: {
-        0: { cellWidth: 10, halign: "center" },
-        1: { cellWidth: 25 },
-        2: { cellWidth: 45 },
-        3: { cellWidth: 25 },
-        4: { cellWidth: 15, halign: "center" },
-        5: { cellWidth: 25, halign: "right" },
-        6: { cellWidth: 25, halign: "right" },
-        7: { cellWidth: 30, halign: "right", fontStyle: "bold" },
+        0: { cellWidth: 8, halign: "center" },
+        1: { cellWidth: 20 },
+        2: { cellWidth: 38 },
+        3: { cellWidth: 22 },
+        4: { cellWidth: 12, halign: "center" },
+        5: { cellWidth: 24, halign: "right" },
+        6: { cellWidth: 24, halign: "right" },
+        7: { cellWidth: 32, halign: "right", fontStyle: "bold" },
       },
       alternateRowStyles: {
         fillColor: [245, 245, 245],
@@ -381,18 +381,18 @@ export default function Reports() {
             <div className="flex gap-2">
               <button
                 onClick={exportInventoryToPDF}
-                className="flex items-center space-x-2 bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-xl hover:scale-105 transition-all duration-300 shadow-lg shadow-red-500/25 hover:shadow-xl hover:shadow-red-500/40 text-sm font-bold"
+                className="flex items-center space-x-1.5 bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-1.5 rounded-lg hover:scale-105 transition-all duration-300 shadow-lg shadow-red-500/25 hover:shadow-xl hover:shadow-red-500/40 text-xs font-bold"
                 title="Export as PDF"
               >
-                <FileDown className="w-4 h-4" />
-                <span>Export PDF</span>
+                <FileDown className="w-3.5 h-3.5" />
+                <span>PDF</span>
               </button>
               <button
                 onClick={() => exportToCSV("inventory")}
-                className="flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-xl hover:scale-105 transition-all duration-300 shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/40 text-sm font-bold"
+                className="flex items-center space-x-1.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 py-1.5 rounded-lg hover:scale-105 transition-all duration-300 shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/40 text-xs font-bold"
                 title="Export as CSV"
               >
-                <Download className="w-4 h-4" />
+                <Download className="w-3.5 h-3.5" />
                 <span>CSV</span>
               </button>
             </div>
