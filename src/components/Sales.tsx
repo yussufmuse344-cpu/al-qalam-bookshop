@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, RefreshCw } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import SaleForm from "./SaleForm";
 import { formatDate } from "../utils/dateFormatter";
@@ -7,7 +7,7 @@ import { useProducts, useSales } from "../hooks/useSupabaseQuery";
 
 export default function Sales() {
   // ✅ Use cached hooks instead of direct queries - saves egress!
-  const { data: sales = [], refetch: refetchSales } = useSales();
+  const { data: sales = [], refetch: refetchSales, isRefetching } = useSales();
   const { data: products = [] } = useProducts();
   const [showForm, setShowForm] = useState(false);
 
@@ -82,16 +82,27 @@ export default function Sales() {
             Sales Records
           </h2>
           <p className="text-slate-300 mt-0.5 text-xs sm:text-sm">
-            Track all your bookstore sales
+            Track all your bookstore sales ({sales.length} total)
           </p>
         </div>
-        <button
-          onClick={() => setShowForm(true)}
-          className="flex items-center justify-center space-x-2 bg-gradient-to-r from-emerald-500 via-green-500 to-emerald-600 text-white px-4 py-2.5 rounded-xl hover:scale-105 transition-all duration-300 shadow-xl shadow-emerald-500/25 hover:shadow-2xl hover:shadow-emerald-500/40 w-full sm:w-auto font-bold text-sm"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Record Sale</span>
-        </button>
+        <div className="flex gap-2 w-full sm:w-auto">
+          <button
+            onClick={() => refetchSales()}
+            disabled={isRefetching}
+            className="flex items-center justify-center space-x-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2.5 rounded-xl hover:scale-105 transition-all duration-300 shadow-xl shadow-blue-500/25 hover:shadow-2xl hover:shadow-blue-500/40 font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            title="Refresh sales data"
+          >
+            <RefreshCw className={`w-4 h-4 ${isRefetching ? 'animate-spin' : ''}`} />
+            <span className="hidden sm:inline">Refresh</span>
+          </button>
+          <button
+            onClick={() => setShowForm(true)}
+            className="flex items-center justify-center space-x-2 bg-gradient-to-r from-emerald-500 via-green-500 to-emerald-600 text-white px-4 py-2.5 rounded-xl hover:scale-105 transition-all duration-300 shadow-xl shadow-emerald-500/25 hover:shadow-2xl hover:shadow-emerald-500/40 flex-1 sm:flex-initial font-bold text-sm"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Record Sale</span>
+          </button>
+        </div>
       </div>
 
       <div className="bg-white/10 backdrop-blur-2xl rounded-2xl shadow-2xl border border-white/20 overflow-hidden">

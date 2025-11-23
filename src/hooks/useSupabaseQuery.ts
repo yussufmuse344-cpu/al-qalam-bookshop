@@ -76,11 +76,13 @@ export function useProducts() {
 
 /**
  * Hook for sales data with caching
+ * Use manual refresh button to update data and save egress costs
  */
 export function useSales() {
   return useSupabaseQuery<any[]>(
     "sales",
-    async () => await supabase.from("sales").select("*")
+    async () => await supabase.from("sales").select("*").order("created_at", { ascending: false })
+    // ✅ No auto-refetch - use manual Refresh button to save costs!
   );
 }
 
