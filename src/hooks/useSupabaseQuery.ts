@@ -81,7 +81,11 @@ export function useProducts() {
 export function useSales() {
   return useSupabaseQuery<any[]>(
     "sales",
-    async () => await supabase.from("sales").select("*").order("created_at", { ascending: false })
+    async () =>
+      await supabase
+        .from("sales")
+        .select("*")
+        .order("created_at", { ascending: false })
     // ✅ No auto-refetch - use manual Refresh button to save costs!
   );
 }

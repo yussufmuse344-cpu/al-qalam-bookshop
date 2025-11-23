@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { Download, Calendar } from "lucide-react";
+import { Download, Calendar, FileDown } from "lucide-react";
 import { useProducts, useSales, useReturns } from "../hooks/useSupabaseQuery";
 import OptimizedImage from "./OptimizedImage";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 export default function Reports() {
   // ✅ Use cached hooks instead of direct queries - saves egress!
@@ -62,15 +64,165 @@ export default function Reports() {
     }
   }
 
+  function exportInventoryToPDF() {
+    const doc = new jsPDF();
+    const today = new Date();
+    const dateStr = today.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+
+    // Sort products alphabetically by name (A-Z)
+    const sortedProducts = [...products].sort((a, b) =>
+      a.name.localeCompare(b.name, undefined, { sensitivity: "base" })
+    );
+
+    // Header
+    doc.setFillColor(11, 11, 20);
+    doc.rect(0, 0, 210, 40, "F");
+
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(24);
+    doc.setFont("helvetica", "bold");
+    doc.text("AL KALAM BOOKSHOP", 105, 15, { align: "center" });
+
+    doc.setFontSize(16);
+    doc.text("Inventory Report", 105, 25, { align: "center" });
+
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    doc.text(`Generated: ${dateStr}`, 105, 33, { align: "center" });
+
+    // Summary section
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.text("Summary", 14, 50);
+
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    const totalProducts = products.length;
+    const totalInventoryValue = products.reduce(
+      (sum, p) => sum + p.buying_price * p.quantity_in_stock,
+      0
+    );
+    const totalPotentialRevenue = products.reduce(
+      (sum, p) => sum + p.selling_price * p.quantity_in_stock,
+      0
+    );
+    const inStock = products.filter((p) => p.quantity_in_stock > 0).length;
+    const outOfStock = products.filter((p) => p.quantity_in_stock === 0).length;
+
+    doc.text(`Total Products: ${totalProducts}`, 14, 58);
+    doc.text(`Products In Stock: ${inStock}`, 14, 64);
+    doc.text(`Out of Stock: ${outOfStock}`, 14, 70);
+    doc.text(
+      `Total Inventory Value: KES ${totalInventoryValue.toLocaleString()}`,
+      105,
+      58
+    );
+    doc.text(
+      `Potential Revenue: KES ${totalPotentialRevenue.toLocaleString()}`,
+      105,
+      64
+    );
+
+    // Product table
+    const tableData = sortedProducts.map((p, index) => [
+      index + 1,
+      p.product_id || "N/A",
+      p.name,
+      p.category || "N/A",
+      p.quantity_in_stock,
+      `KES ${p.buying_price.toLocaleString()}`,
+      `KES ${p.selling_price.toLocaleString()}`,
+      `KES ${(p.buying_price * p.quantity_in_stock).toLocaleString()}`,
+    ]);
+
+    autoTable(doc, {
+      startY: 78,
+      head: [
+        [
+          "#",
+          "Product ID",
+          "Product Name",
+          "Category",
+          "Stock",
+          "Buying Price",
+          "Selling Price",
+          "Total Value",
+        ],
+      ],
+      body: tableData,
+      theme: "striped",
+      headStyles: {
+        fillColor: [11, 11, 20],
+        textColor: [255, 255, 255],
+        fontStyle: "bold",
+        fontSize: 9,
+        halign: "center",
+      },
+      bodyStyles: {
+        fontSize: 8,
+        textColor: [0, 0, 0],
+      },
+      columnStyles: {
+        0: { cellWidth: 10, halign: "center" },
+        1: { cellWidth: 25 },
+        2: { cellWidth: 45 },
+        3: { cellWidth: 25 },
+        4: { cellWidth: 15, halign: "center" },
+        5: { cellWidth: 25, halign: "right" },
+        6: { cellWidth: 25, halign: "right" },
+        7: { cellWidth: 30, halign: "right", fontStyle: "bold" },
+      },
+      alternateRowStyles: {
+        fillColor: [245, 245, 245],
+      },
+      margin: { left: 14, right: 14 },
+      didDrawPage: (data) => {
+        // Footer
+        const pageCount = (doc as any).internal.pages.length - 1;
+        const pageSize = doc.internal.pageSize;
+        const pageHeight = pageSize.height || pageSize.getHeight();
+        doc.setFontSize(8);
+        doc.setTextColor(128, 128, 128);
+        doc.text(
+          `Page ${data.pageNumber} of ${pageCount}`,
+          data.settings.margin.left,
+          pageHeight - 10
+        );
+        doc.text(
+          "Al Kalam Bookshop - Confidential",
+          pageSize.width / 2,
+          pageHeight - 10,
+          { align: "center" }
+        );
+      },
+    });
+
+    // Save the PDF
+    const filename = `Al_Kalam_Inventory_Report_${
+      new Date().toISOString().split("T")[0]
+    }.pdf`;
+    doc.save(filename);
+  }
+
   function exportToCSV(type: "inventory" | "sales" | "returns") {
     let csv = "";
     let filename = "";
 
     if (type === "inventory") {
+      // Sort products alphabetically by name for CSV too
+      const sortedProducts = [...products].sort((a, b) =>
+        a.name.localeCompare(b.name, undefined, { sensitivity: "base" })
+      );
       csv =
-        "Product ID,Name,Category,Buying Price,Selling Price,Stock,Reorder Level\n";
-      products.forEach((p) => {
-        csv += `${p.product_id},"${p.name}",${p.category},${p.buying_price},${p.selling_price},${p.quantity_in_stock},${p.reorder_level}\n`;
+        "Product ID,Name,Category,Buying Price,Selling Price,Stock,Total Value\n";
+      sortedProducts.forEach((p) => {
+        const totalValue = p.buying_price * p.quantity_in_stock;
+        csv += `${p.product_id},"${p.name}",${p.category},${p.buying_price},${p.selling_price},${p.quantity_in_stock},${totalValue}\n`;
       });
       filename = `inventory_${new Date().toISOString().split("T")[0]}.csv`;
     } else if (type === "returns") {
@@ -226,13 +378,24 @@ export default function Reports() {
         <div className="bg-white/10 backdrop-blur-2xl rounded-2xl shadow-xl border border-white/20 p-6">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-lg font-bold text-white">Inventory Report</h3>
-            <button
-              onClick={() => exportToCSV("inventory")}
-              className="flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-xl hover:scale-105 transition-all duration-300 shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/40 text-sm font-bold"
-            >
-              <Download className="w-4 h-4" />
-              <span>Export CSV</span>
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={exportInventoryToPDF}
+                className="flex items-center space-x-2 bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-xl hover:scale-105 transition-all duration-300 shadow-lg shadow-red-500/25 hover:shadow-xl hover:shadow-red-500/40 text-sm font-bold"
+                title="Export as PDF"
+              >
+                <FileDown className="w-4 h-4" />
+                <span>Export PDF</span>
+              </button>
+              <button
+                onClick={() => exportToCSV("inventory")}
+                className="flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-xl hover:scale-105 transition-all duration-300 shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/40 text-sm font-bold"
+                title="Export as CSV"
+              >
+                <Download className="w-4 h-4" />
+                <span>CSV</span>
+              </button>
+            </div>
           </div>
           <div className="space-y-3">
             <ReportRow
