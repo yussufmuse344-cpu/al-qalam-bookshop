@@ -110,7 +110,7 @@ const Navbar = memo(
                   AL-KALAM BOOKS
                 </h1>
                 <p className="text-xs text-slate-300 hidden sm:block">
-                  Dukaan Online
+                  Your trusted bookstore
                 </p>
               </div>
             </div>

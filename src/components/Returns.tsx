@@ -38,7 +38,12 @@ export default function Returns() {
     refetchReturns();
   }
 
-  async function handleDeleteReturn(returnId: string, productId: string, qty: number, productName: string) {
+  async function handleDeleteReturn(
+    returnId: string,
+    productId: string,
+    qty: number,
+    productName: string
+  ) {
     const deleteMessage = `Haqii inaad doonaysid inaad tirtirto soo celintan?\n\nDelete this return record for "${productName}"?\n\nThis will also reverse the refund in sales records.\n\nTani kama noqon karto - This cannot be undone!`;
     if (!confirm(deleteMessage)) return;
 
@@ -51,7 +56,10 @@ export default function Returns() {
         .single();
 
       // Delete return record
-      const { error } = await supabase.from("returns").delete().eq("id", returnId);
+      const { error } = await supabase
+        .from("returns")
+        .delete()
+        .eq("id", returnId);
       if (error) {
         console.error("Error deleting return:", error);
         alert("Failed to delete return record.");
@@ -66,10 +74,12 @@ export default function Returns() {
           .from("products")
           .update({ quantity_in_stock: newStock })
           .eq("id", productId);
-        
+
         if (updateError) {
           console.error("Error updating inventory:", updateError);
-          alert("Return deleted but failed to update inventory. Please update stock manually.");
+          alert(
+            "Return deleted but failed to update inventory. Please update stock manually."
+          );
         }
 
         // Reverse the negative sale entry: Add back positive sale to restore revenue
@@ -79,7 +89,7 @@ export default function Returns() {
             quantity_sold: qty, // Positive quantity
             selling_price: returnData.unit_price || prod.selling_price,
             buying_price: prod.buying_price,
-            total_sale: returnData.total_refund || (returnData.unit_price * qty), // Positive total
+            total_sale: returnData.total_refund || returnData.unit_price * qty, // Positive total
             profit: (returnData.unit_price - prod.buying_price) * qty, // Positive profit
             payment_method: returnData.payment_method || "Cash",
             sold_by: returnData.processed_by,
@@ -92,7 +102,9 @@ export default function Returns() {
 
           if (saleError) {
             console.error("Error reversing refund in sales:", saleError);
-            alert("Return deleted but failed to reverse sales entry. Revenue may be incorrect.");
+            alert(
+              "Return deleted but failed to reverse sales entry. Revenue may be incorrect."
+            );
           }
         }
       }
@@ -110,7 +122,9 @@ export default function Returns() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h2 className="text-lg sm:text-xl font-black text-white">Returns</h2>
-          <p className="text-slate-300 mt-0.5 text-xs sm:text-sm">Customer product returns & stock restorations</p>
+          <p className="text-slate-300 mt-0.5 text-xs sm:text-sm">
+            Customer product returns & stock restorations
+          </p>
         </div>
         <button
           onClick={() => setShowForm(true)}
@@ -126,60 +140,127 @@ export default function Returns() {
           <table className="w-full">
             <thead className="bg-white/5 border-b border-white/10">
               <tr>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">Date</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">Product</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">Qty Returned</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">Refund</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">Reason</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">Condition</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">Processed By</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">Actions</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
+                  Date
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
+                  Product
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
+                  Qty Returned
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
+                  Refund
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
+                  Reason
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
+                  Condition
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
+                  Processed By
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
+                  Status
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
               {returns.length === 0 ? (
                 <tr>
-                  <td colSpan={9} className="px-6 py-12 text-center text-slate-400">No returns recorded yet.</td>
+                  <td
+                    colSpan={9}
+                    className="px-6 py-12 text-center text-slate-400"
+                  >
+                    No returns recorded yet.
+                  </td>
                 </tr>
               ) : (
                 sortedReturns.map((r: any) => {
                   const product = getProductById(r.product_id);
                   return (
-                    <tr key={r.id} className="hover:bg-white/5 transition-colors">
+                    <tr
+                      key={r.id}
+                      className="hover:bg-white/5 transition-colors"
+                    >
                       <td className="px-6 py-4 text-slate-200">
-                        {formatDate(r.return_date || r.created_at)}<br />
-                        <span className="text-xs text-slate-400">{new Date(r.return_date || r.created_at).toLocaleTimeString()}</span>
+                        {formatDate(r.return_date || r.created_at)}
+                        <br />
+                        <span className="text-xs text-slate-400">
+                          {new Date(
+                            r.return_date || r.created_at
+                          ).toLocaleTimeString()}
+                        </span>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center space-x-3">
                           {product?.image_url ? (
-                            <img src={product.image_url} alt={product.name} className="w-10 h-10 object-cover rounded-lg border border-white/20" />
+                            <img
+                              src={product.image_url}
+                              alt={product.name}
+                              className="w-10 h-10 object-cover rounded-lg border border-white/20"
+                            />
                           ) : (
                             <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center border border-white/20">
-                              <span className="text-slate-400 text-xs">No Image</span>
+                              <span className="text-slate-400 text-xs">
+                                No Image
+                              </span>
                             </div>
                           )}
                           <div>
-                            <p className="font-bold text-white text-sm">{product?.name || "Unknown"}</p>
-                            <p className="text-xs text-slate-500">{product?.product_id || "-"}</p>
-                            {r.sale_id && <p className="text-[10px] text-slate-400">Sale: {r.sale_id}</p>}
+                            <p className="font-bold text-white text-sm">
+                              {product?.name || "Unknown"}
+                            </p>
+                            <p className="text-xs text-slate-500">
+                              {product?.product_id || "-"}
+                            </p>
+                            {r.sale_id && (
+                              <p className="text-[10px] text-slate-400">
+                                Sale: {r.sale_id}
+                              </p>
+                            )}
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-slate-200 font-semibold">{r.quantity_returned}</td>
-                      <td className="px-6 py-4 font-bold text-white">KES {Number(r.total_refund || 0).toLocaleString()}</td>
-                      <td className="px-6 py-4 text-slate-300 text-xs max-w-[150px] truncate" title={r.reason}>{r.reason || '-'}</td>
-                      <td className="px-6 py-4">
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-rose-600/20 text-rose-400 border border-rose-500/30">{r.condition || '-'}</span>
+                      <td className="px-6 py-4 text-slate-200 font-semibold">
+                        {r.quantity_returned}
                       </td>
-                      <td className="px-6 py-4 text-slate-200 font-medium">{r.processed_by}</td>
+                      <td className="px-6 py-4 font-bold text-white">
+                        KES {Number(r.total_refund || 0).toLocaleString()}
+                      </td>
+                      <td
+                        className="px-6 py-4 text-slate-300 text-xs max-w-[150px] truncate"
+                        title={r.reason}
+                      >
+                        {r.reason || "-"}
+                      </td>
                       <td className="px-6 py-4">
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-blue-600/20 text-blue-400 border border-blue-500/30">{r.status || 'pending'}</span>
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-rose-600/20 text-rose-400 border border-rose-500/30">
+                          {r.condition || "-"}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-slate-200 font-medium">
+                        {r.processed_by}
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-blue-600/20 text-blue-400 border border-blue-500/30">
+                          {r.status || "pending"}
+                        </span>
                       </td>
                       <td className="px-6 py-4">
                         <button
-                          onClick={() => handleDeleteReturn(r.id, r.product_id, r.quantity_returned, product?.name || 'Unknown Product')}
+                          onClick={() =>
+                            handleDeleteReturn(
+                              r.id,
+                              r.product_id,
+                              r.quantity_returned,
+                              product?.name || "Unknown Product"
+                            )
+                          }
                           className="inline-flex items-center justify-center w-8 h-8 bg-rose-600/20 hover:bg-rose-600/30 text-rose-400 rounded-lg transition-all duration-200 border border-rose-500/30 hover:border-rose-500/50"
                           title="Tirtir Soo Celin - Delete Return"
                         >
