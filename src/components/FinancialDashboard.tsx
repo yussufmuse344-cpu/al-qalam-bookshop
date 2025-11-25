@@ -126,7 +126,7 @@ export default function FinancialDashboard() {
     const reportData = {
       generatedAt: today.toISOString(),
       reportDate: formatDate(today),
-      businessName: "Lenzro ERP",
+      businessName: "Al Kalam",
 
       // Executive Summary
       executiveSummary: {
@@ -306,7 +306,7 @@ export default function FinancialDashboard() {
 
   const generateCSVReport = (data: any) => {
     const lines = [
-      `Lenzro ERP - Financial Report`,
+      `Al Kalam - Financial Report`,
       `Generated: ${data.reportDate}`,
       ``,
       `EXECUTIVE SUMMARY`,

@@ -1,7 +1,7 @@
 {
-  "name": "Lenzro ERP",
-  "short_name": "Lenzro ERP",
-  "description": "Lenzro ERP — Inventory, sales, orders, and financial management system",
+  "name": "Al Kalam",
+  "short_name": "Al Kalam",
+  "description": "Al Kalam — Inventory, sales, orders, and financial management system",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f8fafc",
